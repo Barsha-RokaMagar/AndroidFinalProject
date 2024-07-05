@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="profilename" type="id" />
+    <item name="profilegender" type="id" />
+    <item name="profileusertype" type="id" />
+    <item name="profileemail" type="id" />
+    <item name="profileusername" type="id" />
+    <item name="profilepass" type="id" />
+    <item name="SignOut" type="id" />
+    <item name="editprofile" type="id" />
+    <item name="deleteprofile" type="id" />
+    <item name="titlename" type="id" />
+    <item name="titleusername" type="id" />
+</resources>
