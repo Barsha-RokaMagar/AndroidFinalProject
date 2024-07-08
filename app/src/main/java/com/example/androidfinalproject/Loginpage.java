@@ -65,6 +65,7 @@ public class Loginpage extends AppCompatActivity {
         loginbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 checkuser();
             }
         });
