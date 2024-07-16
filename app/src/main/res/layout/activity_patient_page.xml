@@ -1,25 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:padding="20dp"
-    >
-
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".PatientActivity">
 
     <TextView
+        android:id="@+id/welcomeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Welcome Users"
+        android:textSize="24sp"
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="16dp" />
+
+    <TextView
+        android:id="@+id/quoteTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="\"Remember to take care of yourself along the way\""
+    android:textStyle="italic"
+    android:layout_below="@id/welcomeTextView"
+    android:layout_centerHorizontal="true"
+    android:paddingBottom="16dp" />
+
+    <ImageView
+        android:id="@+id/profileImageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_below="@id/quoteTextView"
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="16dp"
+        android:src="@drawable/ic_person_circle_fill" />
+
+    <TextView
+        android:id="@+id/instructionTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select the specialist of your choice and proceed to schedule an appointment."
+        android:layout_below="@id/profileImageView"
+        android:layout_centerHorizontal="true"
+        android:padding="16dp"
+        android:textAlignment="center" />
+
+    <LinearLayout
+        android:id="@+id/buttonContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:textSize="35dp"
-        android:text="Welcome Patient"/>
+        android:layout_height="wrap_content"
+        android:layout_below="@id/instructionTextView"
+        android:orientation="vertical"
+        android:padding="16dp">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:text="Cardiologist"
+                android:drawableTop="@drawable/ic_heart_fill" />
 
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:text="Dentist"
+                android:drawableTop="@drawable/ic_bandage_fill" />
 
-</LinearLayout>
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:text="Psychologist"
+                android:drawableTop="@drawable/ic_person_2_fill" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="8dp">
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:text="Dermatologist"
+                android:drawableTop="@drawable/ic_pills_fill" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:text="Pediatrician"
+                android:drawableTop="@drawable/ic_person_fill" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:text="Ophthalmologist"
+                android:drawableTop="@drawable/ic_eye_fill" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="8dp">
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:text="Neurologist"
+                android:drawableTop="@drawable/ic_brain_head_profile" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:text="Gynecologist"
+                android:drawableTop="@drawable/ic_staroflife_fill" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/logoutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        android:background="@color/colorPrimary"
+        android:textColor="@android:color/white"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:padding="16dp"
+        android:layout_marginBottom="16dp" />
+
+</RelativeLayout>
