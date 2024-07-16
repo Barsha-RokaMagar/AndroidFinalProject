@@ -13,5 +13,7 @@ public class PatientPage extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_patient_page);
 
+
+
     }
 }
