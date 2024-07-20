@@ -42,7 +42,7 @@ public class EditProfilePage extends AppCompatActivity {
         profilbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(EditProfilePage.this,MainActivity.class);
+                Intent intent = new Intent(EditProfilePage.this, DoctorsPage.class);
                 intent.putExtra("name",editname.getText().toString().trim());
                 intent.putExtra("usename",editusername.getText().toString().trim());
                 intent.putExtra("password",editpass.getText().toString().trim());

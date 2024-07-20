@@ -43,7 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <!-- Radio buttons will be added here dynamically -->
+            <!-- Doctors will be added here dynamically -->
         </RadioGroup>
     </LinearLayout>
 
