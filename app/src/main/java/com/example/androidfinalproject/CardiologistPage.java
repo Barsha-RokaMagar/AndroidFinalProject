@@ -51,7 +51,7 @@ public class CardiologistPage extends AppCompatActivity {
         doctorList = new ArrayList<>();
         doctorRef = FirebaseDatabase.getInstance().getReference().child("doctors");
 
-        // Load doctors dynamically
+
         loadDoctors();
 
         btnDatePicker.setOnClickListener(new View.OnClickListener() {
@@ -81,7 +81,7 @@ public class CardiologistPage extends AppCompatActivity {
                     Model selectedDoctor = (Model) selectedRadioButton.getTag(); // Retrieve doctor object from tag
                     String doctorName = selectedRadioButton.getText().toString();
                     Toast.makeText(CardiologistPage.this, "Appointment Booked with Dr. " + doctorName + " on " + date + " at " + time, Toast.LENGTH_SHORT).show();
-                    // Optionally, you can save this appointment to Firebase or perform other actions
+
                 }
             }
         });
@@ -95,12 +95,12 @@ public class CardiologistPage extends AppCompatActivity {
     }
 
     private void loadDoctors() {
-        // Example: Query doctors for cardiologist specialty
+
         Query query = doctorRef.orderByChild("specialty").equalTo("Cardiologist");
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // Clear existing list
+
                 doctorList.clear();
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -108,7 +108,7 @@ public class CardiologistPage extends AppCompatActivity {
                     doctorList.add(doctor);
                 }
 
-                // After adding all doctors, update the radio group UI
+
                 updateRadioGroup();
             }
 
@@ -120,14 +120,14 @@ public class CardiologistPage extends AppCompatActivity {
     }
 
     private void updateRadioGroup() {
-        rgDoctors.removeAllViews(); // Clear existing radio buttons
+        rgDoctors.removeAllViews();
 
         for (Model doctor : doctorList) {
             RadioButton radioButton = new RadioButton(CardiologistPage.this);
-            radioButton.setText(doctor.getName()); // Set doctor's name as text
-            radioButton.setTag(doctor); // Set doctor object as tag
+            radioButton.setText(doctor.getName());
+            radioButton.setTag(doctor);
 
-            // Add RadioButton to RadioGroup
+
             rgDoctors.addView(radioButton);
         }
     }
