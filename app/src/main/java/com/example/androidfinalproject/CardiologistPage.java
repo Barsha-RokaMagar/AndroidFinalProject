@@ -49,8 +49,7 @@ public class CardiologistPage extends AppCompatActivity {
         rgDoctors = findViewById(R.id.rg_doctors); // RadioGroup to hold doctors
 
         doctorList = new ArrayList<>();
-        doctorRef = FirebaseDatabase.getInstance().getReference().child("doctors");
-
+        doctorRef = FirebaseDatabase.getInstance().getReference().child("users");
 
         loadDoctors();
 
@@ -81,7 +80,6 @@ public class CardiologistPage extends AppCompatActivity {
                     Model selectedDoctor = (Model) selectedRadioButton.getTag(); // Retrieve doctor object from tag
                     String doctorName = selectedRadioButton.getText().toString();
                     Toast.makeText(CardiologistPage.this, "Appointment Booked with Dr. " + doctorName + " on " + date + " at " + time, Toast.LENGTH_SHORT).show();
-
                 }
             }
         });
@@ -95,20 +93,15 @@ public class CardiologistPage extends AppCompatActivity {
     }
 
     private void loadDoctors() {
-
         Query query = doctorRef.orderByChild("specialty").equalTo("Cardiologist");
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
                 doctorList.clear();
-
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Model doctor = snapshot.getValue(Model.class);
                     doctorList.add(doctor);
                 }
-
-
                 updateRadioGroup();
             }
 
@@ -121,13 +114,10 @@ public class CardiologistPage extends AppCompatActivity {
 
     private void updateRadioGroup() {
         rgDoctors.removeAllViews();
-
         for (Model doctor : doctorList) {
             RadioButton radioButton = new RadioButton(CardiologistPage.this);
             radioButton.setText(doctor.getName());
             radioButton.setTag(doctor);
-
-
             rgDoctors.addView(radioButton);
         }
     }
