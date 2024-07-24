@@ -14,6 +14,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+
 public class CardiologistPage extends AppCompatActivity {
 
     private EditText etDate, etTime;
@@ -33,6 +36,7 @@ public class CardiologistPage extends AppCompatActivity {
     private RadioGroup rgDoctors;
 
     private DatabaseReference usersRef;
+    private DatabaseReference appointmentsRef;
     private List<Model> doctorList;
 
     @Override
@@ -50,6 +54,7 @@ public class CardiologistPage extends AppCompatActivity {
 
         doctorList = new ArrayList<>();
         usersRef = FirebaseDatabase.getInstance().getReference().child("users");
+        appointmentsRef = FirebaseDatabase.getInstance().getReference().child("appointments");
 
         loadCardiologists();
 
@@ -70,17 +75,7 @@ public class CardiologistPage extends AppCompatActivity {
         btnBookAppointment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String date = etDate.getText().toString();
-                String time = etTime.getText().toString();
-                int selectedId = rgDoctors.getCheckedRadioButtonId();
-                if (selectedId == -1) {
-                    Toast.makeText(CardiologistPage.this, "Please select a doctor", Toast.LENGTH_SHORT).show();
-                } else {
-                    RadioButton selectedRadioButton = findViewById(selectedId);
-                    Model selectedDoctor = (Model) selectedRadioButton.getTag(); // Retrieve doctor object from tag
-                    String doctorName = selectedRadioButton.getText().toString();
-                    Toast.makeText(CardiologistPage.this, "Appointment Booked with Dr. " + doctorName + " on " + date + " at " + time, Toast.LENGTH_SHORT).show();
-                }
+                bookAppointment();
             }
         });
 
@@ -93,8 +88,7 @@ public class CardiologistPage extends AppCompatActivity {
     }
 
     private void loadCardiologists() {
-        Query query = usersRef.orderByChild("userType").equalTo("Doctor");
-        query.addValueEventListener(new ValueEventListener() {
+        usersRef.orderByChild("userType").equalTo("Doctor").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 doctorList.clear();
@@ -145,5 +139,35 @@ public class CardiologistPage extends AppCompatActivity {
                 (view, hourOfDay, minute1) -> etTime.setText(String.format("%02d:%02d", hourOfDay, minute1)),
                 hour, minute, false);
         timePickerDialog.show();
+    }
+
+    private void bookAppointment() {
+        String date = etDate.getText().toString();
+        String time = etTime.getText().toString();
+        int selectedId = rgDoctors.getCheckedRadioButtonId();
+
+        if (selectedId == -1) {
+            Toast.makeText(CardiologistPage.this, "Please select a doctor", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        RadioButton selectedRadioButton = findViewById(selectedId);
+        Model selectedDoctor = (Model) selectedRadioButton.getTag(); // Retrieve doctor object from tag
+        String doctorId = selectedDoctor.getUsername(); // Assuming username is unique
+
+        Appointment appointment = new Appointment(date, time, selectedDoctor.getName(), selectedDoctor.getSpecialty());
+
+        String appointmentKey = appointmentsRef.child(doctorId).push().getKey();
+        appointmentsRef.child(doctorId).child(appointmentKey).setValue(appointment)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(CardiologistPage.this, "Appointment booked successfully", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(CardiologistPage.this, "Failed to book appointment: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 }
