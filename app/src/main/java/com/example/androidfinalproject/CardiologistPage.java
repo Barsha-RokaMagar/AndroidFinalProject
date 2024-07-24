@@ -32,7 +32,7 @@ public class CardiologistPage extends AppCompatActivity {
     private Button btnBookAppointment, btnGoBack;
     private RadioGroup rgDoctors;
 
-    private DatabaseReference doctorRef;
+    private DatabaseReference usersRef;
     private List<Model> doctorList;
 
     @Override
@@ -49,9 +49,9 @@ public class CardiologistPage extends AppCompatActivity {
         rgDoctors = findViewById(R.id.rg_doctors); // RadioGroup to hold doctors
 
         doctorList = new ArrayList<>();
-        doctorRef = FirebaseDatabase.getInstance().getReference().child("users");
+        usersRef = FirebaseDatabase.getInstance().getReference().child("users");
 
-        loadDoctors();
+        loadCardiologists();
 
         btnDatePicker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,22 +92,24 @@ public class CardiologistPage extends AppCompatActivity {
         });
     }
 
-    private void loadDoctors() {
-        Query query = doctorRef.orderByChild("specialty").equalTo("Cardiologist");
+    private void loadCardiologists() {
+        Query query = usersRef.orderByChild("userType").equalTo("Doctor");
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 doctorList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Model doctor = snapshot.getValue(Model.class);
-                    doctorList.add(doctor);
+                    if (doctor != null && "cardiologist".equalsIgnoreCase(doctor.getSpecialty())) {
+                        doctorList.add(doctor);
+                    }
                 }
                 updateRadioGroup();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(CardiologistPage.this, "Failed to load doctors: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(CardiologistPage.this, "Failed to load cardiologists: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
