@@ -12,15 +12,18 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
+
 import java.util.Calendar;
 
 public class DoctorsPage extends AppCompatActivity {
@@ -49,7 +52,6 @@ public class DoctorsPage extends AppCompatActivity {
 
         if (currentUser != null) {
             Log.d(TAG, "User is logged in: " + currentUser.getUid());
-            welcomeText.setText("Welcome, Doctor " + (currentUser.getDisplayName() != null ? currentUser.getDisplayName() : ""));
         } else {
             Log.d(TAG, "User not logged in");
             Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
@@ -72,8 +74,10 @@ public class DoctorsPage extends AppCompatActivity {
         logoutButton = findViewById(R.id.logoutButton);
         appointmentList = findViewById(R.id.appointmentList);
 
+        // Set clinic name
         clinicName.setText("Healthy Life Clinic");
 
+        // Set up listeners
         datePickerButton.setOnClickListener(v -> showDatePicker());
         startTimePickerButton.setOnClickListener(v -> showTimePicker(true));
         endTimePickerButton.setOnClickListener(v -> showTimePicker(false));
@@ -84,6 +88,7 @@ public class DoctorsPage extends AppCompatActivity {
             finish(); // Close current activity
         });
 
+        // Initialize Firebase Database references
         String doctorId = currentUser.getUid();
         availabilityRef = FirebaseDatabase.getInstance().getReference().child("availability").child(doctorId);
         appointmentRef = FirebaseDatabase.getInstance().getReference().child("appointments");
@@ -160,18 +165,24 @@ public class DoctorsPage extends AppCompatActivity {
         availabilityRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                StringBuilder builder = new StringBuilder();
-                for (DataSnapshot dateSnapshot : dataSnapshot.getChildren()) {
-                    String date = dateSnapshot.getKey();
-                    String startTime = dateSnapshot.child("startTime").getValue(String.class);
-                    String endTime = dateSnapshot.child("endTime").getValue(String.class);
-                    builder.append(date).append(": ").append(startTime).append(" - ").append(endTime).append("\n");
+                try {
+                    StringBuilder builder = new StringBuilder();
+                    for (DataSnapshot dateSnapshot : dataSnapshot.getChildren()) {
+                        String date = dateSnapshot.getKey();
+                        String startTime = dateSnapshot.child("startTime").getValue(String.class);
+                        String endTime = dateSnapshot.child("endTime").getValue(String.class);
+                        builder.append(date).append(": ").append(startTime).append(" - ").append(endTime).append("\n");
+                    }
+                    currentAvailability.setText(builder.toString());
+                } catch (Exception e) {
+                    Log.e(TAG, "Error loading availability", e);
+                    Toast.makeText(DoctorsPage.this, "Error loading availability", Toast.LENGTH_SHORT).show();
                 }
-                currentAvailability.setText(builder.toString());
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e(TAG, "Failed to load availability", databaseError.toException());
                 Toast.makeText(DoctorsPage.this, "Failed to load availability", Toast.LENGTH_SHORT).show();
             }
         });
@@ -181,48 +192,54 @@ public class DoctorsPage extends AppCompatActivity {
         appointmentRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                appointmentList.removeAllViews();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String date = snapshot.child("date").getValue(String.class);
-                    String time = snapshot.child("time").getValue(String.class);
-                    String cardiologist = snapshot.child("cardiologist").getValue(String.class);
-                    String patientId = snapshot.child("patientId").getValue(String.class);
+                try {
+                    appointmentList.removeAllViews();
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        String date = snapshot.child("date").getValue(String.class);
+                        String time = snapshot.child("time").getValue(String.class);
+                        String cardiologist = snapshot.child("cardiologist").getValue(String.class);
+                        String patientId = snapshot.child("patientId").getValue(String.class);
 
-                    TableRow row = new TableRow(DoctorsPage.this);
-                    TextView dateView = new TextView(DoctorsPage.this);
-                    dateView.setText(date);
-                    dateView.setPadding(8, 8, 8, 8);
-                    row.addView(dateView);
+                        TableRow row = new TableRow(DoctorsPage.this);
+                        TextView dateView = new TextView(DoctorsPage.this);
+                        dateView.setText(date);
+                        dateView.setPadding(8, 8, 8, 8);
+                        row.addView(dateView);
 
-                    TextView timeView = new TextView(DoctorsPage.this);
-                    timeView.setText(time);
-                    timeView.setPadding(8, 8, 8, 8);
-                    row.addView(timeView);
+                        TextView timeView = new TextView(DoctorsPage.this);
+                        timeView.setText(time);
+                        timeView.setPadding(8, 8, 8, 8);
+                        row.addView(timeView);
 
-                    TextView cardiologistView = new TextView(DoctorsPage.this);
-                    cardiologistView.setText(cardiologist);
-                    cardiologistView.setPadding(8, 8, 8, 8);
-                    row.addView(cardiologistView);
+                        TextView cardiologistView = new TextView(DoctorsPage.this);
+                        cardiologistView.setText(cardiologist);
+                        cardiologistView.setPadding(8, 8, 8, 8);
+                        row.addView(cardiologistView);
 
-                    TextView actionsView = new TextView(DoctorsPage.this);
-                    actionsView.setText("View Patient");
-                    actionsView.setPadding(8, 8, 8, 8);
-                    actionsView.setOnClickListener(v -> viewPatient(patientId));
-                    row.addView(actionsView);
+                        TextView actionsView = new TextView(DoctorsPage.this);
+                        actionsView.setText("View Patient");
+                        actionsView.setPadding(8, 8, 8, 8);
+                        actionsView.setOnClickListener(v -> viewPatient(patientId));
+                        row.addView(actionsView);
 
-                    appointmentList.addView(row);
+                        appointmentList.addView(row);
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error loading appointments", e);
+                    Toast.makeText(DoctorsPage.this, "Error loading appointments", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e(TAG, "Failed to load appointments", databaseError.toException());
                 Toast.makeText(DoctorsPage.this, "Failed to load appointments", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void viewPatient(String patientId) {
-        // Add functionality to view patient details
-        Toast.makeText(this, "Viewing details for patient: " + patientId, Toast.LENGTH_SHORT).show();
+        // Implement your method to view patient details
+        Toast.makeText(this, "Viewing patient: " + patientId, Toast.LENGTH_SHORT).show();
     }
 }
