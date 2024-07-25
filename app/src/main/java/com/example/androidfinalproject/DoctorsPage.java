@@ -3,6 +3,7 @@ package com.example.androidfinalproject;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,6 +28,8 @@ import java.util.Calendar;
 
 public class DoctorsPage extends AppCompatActivity {
 
+    private static final String TAG = "DoctorsPage";
+
     private TextView clinicName, welcomeText, currentAvailability;
     private EditText dateInput, startTimeInput, endTimeInput;
     private ImageButton datePickerButton, startTimePickerButton, endTimePickerButton;
@@ -34,7 +37,7 @@ public class DoctorsPage extends AppCompatActivity {
     private TableLayout appointmentList;
 
     private FirebaseAuth mAuth;
-    private DatabaseReference appointmentsRef;
+    private DatabaseReference availabilityRef;
 
     private int selectedYear, selectedMonth, selectedDay, selectedStartHour, selectedStartMinute, selectedEndHour, selectedEndMinute;
 
@@ -45,7 +48,18 @@ public class DoctorsPage extends AppCompatActivity {
 
         // Initialize Firebase authentication
         mAuth = FirebaseAuth.getInstance();
-        appointmentsRef = FirebaseDatabase.getInstance().getReference().child("appointments");
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        // Check if user is logged in
+        if (currentUser != null) {
+            Log.d(TAG, "User is logged in: " + currentUser.getUid());
+            welcomeText.setText("Welcome, Doctor " + (currentUser.getDisplayName() != null ? currentUser.getDisplayName() : ""));
+        } else {
+            Log.d(TAG, "User not logged in");
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
+            finish(); // Close the activity if the user is not logged in
+            return;
+        }
 
         // Initialize views
         clinicName = findViewById(R.id.clinicName);
@@ -64,13 +78,6 @@ public class DoctorsPage extends AppCompatActivity {
 
         // Set clinic name
         clinicName.setText("Healthy Life Clinic");
-
-        // Check if user is logged in
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            // Set welcome text
-            welcomeText.setText("Welcome, Doctor " + currentUser.getDisplayName());
-        }
 
         // Set click listeners
         datePickerButton.setOnClickListener(new View.OnClickListener() {
@@ -116,8 +123,11 @@ public class DoctorsPage extends AppCompatActivity {
             }
         });
 
-        // Load appointments for current doctor
-        loadAppointments();
+        // Initialize Firebase database reference for availability
+        availabilityRef = FirebaseDatabase.getInstance().getReference().child("availability").child(currentUser.getUid());
+
+        // Load availability for current doctor
+        loadAvailability();
     }
 
     private void showDatePicker() {
@@ -162,6 +172,13 @@ public class DoctorsPage extends AppCompatActivity {
     }
 
     private void saveAvailability() {
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "Save button clicked but user is null");
+            return;
+        }
+
         String date = dateInput.getText().toString().trim();
         String startTime = startTimeInput.getText().toString().trim();
         String endTime = endTimeInput.getText().toString().trim();
@@ -171,20 +188,19 @@ public class DoctorsPage extends AppCompatActivity {
             return;
         }
 
-        // Save availability to Firebase
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser == null) {
-            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         String doctorId = currentUser.getUid();
-        DatabaseReference availabilityRef = appointmentsRef.child(doctorId).child("availability").push();
-        availabilityRef.child("date").setValue(date);
-        availabilityRef.child("startTime").setValue(startTime);
-        availabilityRef.child("endTime").setValue(endTime);
-
-        Toast.makeText(this, "Availability saved", Toast.LENGTH_SHORT).show();
+        DatabaseReference availabilityEntry = availabilityRef.push();
+        availabilityEntry.child("date").setValue(date);
+        availabilityEntry.child("startTime").setValue(startTime);
+        availabilityEntry.child("endTime").setValue(endTime).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(DoctorsPage.this, "Availability saved", Toast.LENGTH_SHORT).show();
+                loadAvailability(); // Reload to display updated availability
+            } else {
+                Toast.makeText(DoctorsPage.this, "Failed to save availability", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Error saving availability", task.getException());
+            }
+        });
     }
 
     private void clearAvailability() {
@@ -193,7 +209,7 @@ public class DoctorsPage extends AppCompatActivity {
         endTimeInput.setText("");
     }
 
-    private void loadAppointments() {
+    private void loadAvailability() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
             return;
@@ -201,16 +217,15 @@ public class DoctorsPage extends AppCompatActivity {
 
         String doctorId = currentUser.getUid();
 
-        appointmentsRef.child(doctorId).child("appointments").addValueEventListener(new ValueEventListener() {
+        availabilityRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 appointmentList.removeAllViews();
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String patientName = snapshot.child("patientName").getValue(String.class);
                     String date = snapshot.child("date").getValue(String.class);
-                    String time = snapshot.child("time").getValue(String.class);
-                    String patientSpecialty = snapshot.child("patientSpecialty").getValue(String.class);
+                    String startTime = snapshot.child("startTime").getValue(String.class);
+                    String endTime = snapshot.child("endTime").getValue(String.class);
 
                     TableRow row = new TableRow(DoctorsPage.this);
 
@@ -219,21 +234,11 @@ public class DoctorsPage extends AppCompatActivity {
                     dateTextView.setPadding(8, 8, 8, 8);
 
                     TextView timeTextView = new TextView(DoctorsPage.this);
-                    timeTextView.setText(time);
+                    timeTextView.setText(startTime + " - " + endTime);
                     timeTextView.setPadding(8, 8, 8, 8);
-
-                    TextView patientTextView = new TextView(DoctorsPage.this);
-                    patientTextView.setText(patientName);
-                    patientTextView.setPadding(8, 8, 8, 8);
-
-                    TextView specialtyTextView = new TextView(DoctorsPage.this);
-                    specialtyTextView.setText(patientSpecialty);
-                    specialtyTextView.setPadding(8, 8, 8, 8);
 
                     row.addView(dateTextView);
                     row.addView(timeTextView);
-                    row.addView(patientTextView);
-                    row.addView(specialtyTextView);
 
                     appointmentList.addView(row);
                 }
@@ -241,7 +246,8 @@ public class DoctorsPage extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(DoctorsPage.this, "Failed to load appointments: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(DoctorsPage.this, "Failed to load availability: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Error loading availability", databaseError.toException());
             }
         });
     }

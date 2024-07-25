@@ -1,27 +1,59 @@
 package com.example.androidfinalproject;
 
-public class Appointment {
-    private String date;
-    private String time;
-    private String doctorName;
-    private String doctorSpecialty;
+import java.util.Date;
 
+public class Appointment {
+    private String appointmentId;
+    private String doctorName;
+    private String patientName;
+    private Date date;
+    private String time;
+    private String details;
+
+    // Default constructor
     public Appointment() {
-        // Default constructor required for Firebase
     }
 
-    public Appointment(String date, String time, String doctorName, String doctorSpecialty) {
+    // Parameterized constructor
+    public Appointment(String appointmentId, String doctorName, String patientName, Date date, String time, String details) {
+        this.appointmentId = appointmentId;
+        this.doctorName = doctorName;
+        this.patientName = patientName;
         this.date = date;
         this.time = time;
-        this.doctorName = doctorName;
-        this.doctorSpecialty = doctorSpecialty;
+        this.details = details;
     }
 
-    public String getDate() {
+    // Getters and setters
+    public String getAppointmentId() {
+        return appointmentId;
+    }
+
+    public void setAppointmentId(String appointmentId) {
+        this.appointmentId = appointmentId;
+    }
+
+    public String getDoctorName() {
+        return doctorName;
+    }
+
+    public void setDoctorName(String doctorName) {
+        this.doctorName = doctorName;
+    }
+
+    public String getPatientName() {
+        return patientName;
+    }
+
+    public void setPatientName(String patientName) {
+        this.patientName = patientName;
+    }
+
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -33,19 +65,16 @@ public class Appointment {
         this.time = time;
     }
 
-    public String getDoctorName() {
-        return doctorName;
+    public String getDetails() {
+        return details;
     }
 
-    public void setDoctorName(String doctorName) {
-        this.doctorName = doctorName;
+    public void setDetails(String details) {
+        this.details = details;
     }
 
-    public String getDoctorSpecialty() {
-        return doctorSpecialty;
-    }
-
-    public void setDoctorSpecialty(String doctorSpecialty) {
-        this.doctorSpecialty = doctorSpecialty;
+    @Override
+    public String toString() {
+        return "Appointment with Dr. " + doctorName + " on " + date.toString() + " at " + time;
     }
 }
