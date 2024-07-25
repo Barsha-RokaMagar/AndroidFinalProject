@@ -28,9 +28,6 @@
             android:name=".EditProfilePage"
             android:exported="false" />
         <activity
-            android:name=".DoctorsPage"
-            android:exported="false" />
-        <activity
             android:name=".ResetpasswordPage"
             android:exported="false" />
         <activity
