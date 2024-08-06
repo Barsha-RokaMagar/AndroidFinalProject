@@ -30,17 +30,17 @@ public class PatientDetailsPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_details_page);
 
-        // Initialize Firebase Database references
+
         usersRef = FirebaseDatabase.getInstance().getReference().child("users");
         appointmentRef = FirebaseDatabase.getInstance().getReference().child("appointments");
 
-        // Initialize views
+
         patientName = findViewById(R.id.patientName);
         patientEmail = findViewById(R.id.patientEmail);
         confirmButton = findViewById(R.id.confirmButton);
         cancelButton = findViewById(R.id.cancelButton);
 
-        // Get patientId from intent
+
         patientId = getIntent().getStringExtra("patientId");
         appointmentId = getIntent().getStringExtra("appointmentId");
 
@@ -50,10 +50,10 @@ public class PatientDetailsPage extends AppCompatActivity {
             return;
         }
 
-        // Load patient details
+
         loadPatientDetails();
 
-        // Set up button listeners
+
         confirmButton.setOnClickListener(v -> confirmAppointment());
         cancelButton.setOnClickListener(v -> cancelAppointment());
     }

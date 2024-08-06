@@ -2,6 +2,7 @@ package com.example.androidfinalproject;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -29,6 +30,8 @@ import java.util.Calendar;
 public class DoctorsPage extends AppCompatActivity {
 
     private static final String TAG = "DoctorsPage";
+    private String appointmentId;
+
 
     private TextView clinicName, welcomeText, currentAvailability;
     private EditText dateInput, startTimeInput, endTimeInput;
@@ -46,7 +49,7 @@ public class DoctorsPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doctors_page);
 
-        // Initialize Firebase Auth
+
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
@@ -55,11 +58,11 @@ public class DoctorsPage extends AppCompatActivity {
         } else {
             Log.d(TAG, "User not logged in");
             Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
-            finish(); // Close the activity if the user is not logged in
+            finish();
             return;
         }
 
-        // Initialize views
+
         clinicName = findViewById(R.id.clinicName);
         welcomeText = findViewById(R.id.welcomeText);
         currentAvailability = findViewById(R.id.currentAvailability);
@@ -74,10 +77,10 @@ public class DoctorsPage extends AppCompatActivity {
         logoutButton = findViewById(R.id.logoutButton);
         appointmentList = findViewById(R.id.appointmentList);
 
-        // Set clinic name
+
         clinicName.setText("Healthy Life Clinic");
 
-        // Set up listeners
+
         datePickerButton.setOnClickListener(v -> showDatePicker());
         startTimePickerButton.setOnClickListener(v -> showTimePicker(true));
         endTimePickerButton.setOnClickListener(v -> showTimePicker(false));
@@ -85,10 +88,10 @@ public class DoctorsPage extends AppCompatActivity {
         clearButton.setOnClickListener(v -> clearAvailability());
         logoutButton.setOnClickListener(v -> {
             mAuth.signOut();
-            finish(); // Close current activity
+            finish();
         });
 
-        // Initialize Firebase Database references
+     
         String doctorId = currentUser.getUid();
         availabilityRef = FirebaseDatabase.getInstance().getReference().child("availability").child(doctorId);
         appointmentRef = FirebaseDatabase.getInstance().getReference().child("appointments");
@@ -199,8 +202,10 @@ public class DoctorsPage extends AppCompatActivity {
                         String time = snapshot.child("time").getValue(String.class);
                         String cardiologist = snapshot.child("cardiologist").getValue(String.class);
                         String patientId = snapshot.child("patientId").getValue(String.class);
+                        String appointmentId = snapshot.getKey(); // Assuming this is your appointment ID
 
                         TableRow row = new TableRow(DoctorsPage.this);
+
                         TextView dateView = new TextView(DoctorsPage.this);
                         dateView.setText(date);
                         dateView.setPadding(8, 8, 8, 8);
@@ -219,7 +224,12 @@ public class DoctorsPage extends AppCompatActivity {
                         TextView actionsView = new TextView(DoctorsPage.this);
                         actionsView.setText("View Patient");
                         actionsView.setPadding(8, 8, 8, 8);
-                        actionsView.setOnClickListener(v -> viewPatient(patientId));
+                        actionsView.setOnClickListener(v -> {
+
+                            Intent intent = new Intent(DoctorsPage.this, PatientDetailsPage.class);
+                            intent.putExtra("appointmentId", appointmentId);
+                            startActivity(intent);
+                        });
                         row.addView(actionsView);
 
                         appointmentList.addView(row);
@@ -238,8 +248,13 @@ public class DoctorsPage extends AppCompatActivity {
         });
     }
 
+
+
     private void viewPatient(String patientId) {
-        // Implement your method to view patient details
-        Toast.makeText(this, "Viewing patient: " + patientId, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(DoctorsPage.this, PatientDetailsPage.class);
+        intent.putExtra("patientId", patientId);
+        intent.putExtra("appointmentId", appointmentId);
+        startActivity(intent);
     }
 }
+
