@@ -15,9 +15,11 @@
         android:theme="@style/Theme.AndroidFinalProject"
         tools:targetApi="31">
         <activity
-            android:name=".CardiologistPage"
+            android:name=".AppointmentDetails"
             android:exported="false" />
-        <!-- Activities with potential intent-filters should be exported -->
+        <activity
+            android:name=".CardiologistPage"
+            android:exported="false" /> <!-- Activities with potential intent-filters should be exported -->
         <activity
             android:name=".PatientPage"
             android:exported="false" />
