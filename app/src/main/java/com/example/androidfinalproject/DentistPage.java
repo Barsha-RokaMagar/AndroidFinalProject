@@ -63,6 +63,7 @@ public class DentistPage extends AppCompatActivity {
         doctorRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             RadioButton selectedButton = findViewById(checkedId);
             selectedDentist = selectedButton.getText().toString();
+            Log.d("DentistPage", "Selected dentist: " + selectedDentist);
         });
     }
 
@@ -123,15 +124,13 @@ public class DentistPage extends AppCompatActivity {
             if (task.isSuccessful()) {
                 Toast.makeText(DentistPage.this, "Appointment booked", Toast.LENGTH_SHORT).show();
 
-                // Log the appointment details for debugging
                 Log.d("DentistPage", "Appointment booked - Date: " + date + ", Time: " + time + ", Dentist: " + selectedDentist);
 
-                // Navigate to AppointmentDetails activity with appointment details
                 Intent intent = new Intent(DentistPage.this, AppointmentDetails.class);
                 intent.putExtra("date", date);
                 intent.putExtra("time", time);
                 intent.putExtra("doctorName", selectedDentist);
-                intent.putExtra("specialty", "Dentist"); // Assuming you want to pass the specialty
+                intent.putExtra("specialty", "Dentist");
                 startActivity(intent);
             } else {
                 Log.e("DentistPage", "Failed to book appointment", task.getException());
@@ -147,22 +146,32 @@ public class DentistPage extends AppCompatActivity {
     }
 
     private void loadDentists() {
-        usersRef.orderByChild("specialty").equalTo("dentist").addValueEventListener(new ValueEventListener() {
+        usersRef.orderByChild("specialty").equalTo("Dentist").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d("DentistPage", "Data snapshot received: " + dataSnapshot.toString());
                 doctorRadioGroup.removeAllViews();
+
+                if (!dataSnapshot.exists()) {
+                    Log.d("DentistPage", "No dentists found.");
+                    Toast.makeText(DentistPage.this, "No dentists available", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String name = snapshot.child("name").getValue(String.class);
                     if (name != null) {
                         RadioButton radioButton = new RadioButton(DentistPage.this);
                         radioButton.setText(name);
                         doctorRadioGroup.addView(radioButton);
+                        Log.d("DentistPage", "Added dentist: " + name);
                     }
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("DentistPage", "Failed to load dentists", databaseError.toException());
                 Toast.makeText(DentistPage.this, "Failed to load dentists", Toast.LENGTH_SHORT).show();
             }
         });
