@@ -32,10 +32,10 @@ public class PatientPage extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        cardiologistLayout.setOnClickListener(new View.OnClickListener() {
+        dentistLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(PatientPage.this, CardiologistPage.class);
+                Intent intent = new Intent(PatientPage.this, DentistPage.class);
                 startActivity(intent);
             }
         });
