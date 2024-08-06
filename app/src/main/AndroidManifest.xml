@@ -15,6 +15,9 @@
         android:theme="@style/Theme.AndroidFinalProject"
         tools:targetApi="31">
         <activity
+            android:name=".DentistPage"
+            android:exported="false" />
+        <activity
             android:name=".AppointmentDetails"
             android:exported="false" />
         <activity
