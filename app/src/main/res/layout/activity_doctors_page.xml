@@ -188,13 +188,13 @@
                 android:padding="8dp" />
         </TableRow>
 
-        <!-- Placeholder for appointment rows. These rows will be added programmatically -->
+
 
     </TableLayout>
 
     <Button
         android:id="@+id/logoutButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|bottom"
         android:layout_marginBottom="16dp"
