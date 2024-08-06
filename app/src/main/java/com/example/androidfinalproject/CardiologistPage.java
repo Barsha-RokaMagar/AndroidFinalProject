@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -15,11 +16,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 
 import java.util.Calendar;
 
@@ -116,11 +117,16 @@ public class CardiologistPage extends AppCompatActivity {
         newAppointment.child("patientId").setValue(patientId).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Toast.makeText(CardiologistPage.this, "Appointment booked", Toast.LENGTH_SHORT).show();
+
+                // Log the appointment details for debugging
+                Log.d("CardiologistPage", "Appointment booked - Date: " + date + ", Time: " + time + ", Cardiologist: " + selectedCardiologist);
+
                 // Navigate to AppointmentDetails activity with appointment details
                 Intent intent = new Intent(CardiologistPage.this, AppointmentDetails.class);
                 intent.putExtra("date", date);
                 intent.putExtra("time", time);
-                intent.putExtra("cardiologist", selectedCardiologist);
+                intent.putExtra("doctorName", selectedCardiologist);
+                intent.putExtra("specialty", "Cardiologist"); // Assuming you want to pass the specialty
                 startActivity(intent);
             } else {
                 Toast.makeText(CardiologistPage.this, "Failed to book appointment", Toast.LENGTH_SHORT).show();
