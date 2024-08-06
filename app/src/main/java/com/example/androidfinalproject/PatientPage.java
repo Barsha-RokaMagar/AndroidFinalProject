@@ -21,9 +21,17 @@ public class PatientPage extends AppCompatActivity {
         setContentView(R.layout.activity_patient_page);
 
         LinearLayout cardiologistLayout = findViewById(R.id.cardiologistLayout);
-        btn = findViewById(R.id.gobackBtn);
+        LinearLayout dentistLayout = findViewById(R.id.dentistLayout);
+        btn = findViewById(R.id.logoutBtn);
 
 
+        cardiologistLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(PatientPage.this, CardiologistPage.class);
+                startActivity(intent);
+            }
+        });
         cardiologistLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -296,10 +296,10 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/gobackBtn"
+        android:id="@+id/logoutBtn"
         android:layout_width="300dp"
         android:layout_height="55dp"
-        android:text="Go Back"
+        android:text="Logout"
         android:textColor="@android:color/white"
         android:layout_gravity="center_horizontal"
         android:layout_margin="15dp"

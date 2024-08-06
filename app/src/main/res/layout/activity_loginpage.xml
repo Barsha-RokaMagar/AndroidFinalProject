@@ -34,10 +34,10 @@
         android:layout_marginTop="8dp"
         android:textStyle="bold"/>
     <EditText
-        android:id="@+id/usernamelogin"
+        android:id="@+id/emaillogin"
         android:layout_width="300dp"
         android:layout_height="45dp"
-        android:hint="Enter username"
+        android:hint="Enter email"
         android:gravity="center"
         android:background="@drawable/editext_border"
         android:layout_margin="10dp"
