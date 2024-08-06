@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
@@ -28,7 +29,7 @@ public class CardiologistPage extends AppCompatActivity {
 
     private EditText dateInput, timeInput;
     private ImageButton selectDateButton, selectTimeButton;
-    private Button makeAppointmentButton;
+    private Button makeAppointmentButton, goBackButton;
     private RadioGroup doctorRadioGroup;
 
     private FirebaseAuth mAuth;
@@ -44,23 +45,24 @@ public class CardiologistPage extends AppCompatActivity {
         usersRef = FirebaseDatabase.getInstance().getReference().child("users");
         appointmentRef = FirebaseDatabase.getInstance().getReference().child("appointments");
 
-        // Initialize views
+
         dateInput = findViewById(R.id.et_date);
         timeInput = findViewById(R.id.et_time);
         selectDateButton = findViewById(R.id.btn_date_picker);
         selectTimeButton = findViewById(R.id.btn_time_picker);
         makeAppointmentButton = findViewById(R.id.btn_book_appointment);
+        goBackButton = findViewById(R.id.btn_go_back);
         doctorRadioGroup = findViewById(R.id.rg_doctors);
 
-        // Set click listeners
         selectDateButton.setOnClickListener(v -> showDatePicker());
         selectTimeButton.setOnClickListener(v -> showTimePicker());
         makeAppointmentButton.setOnClickListener(v -> bookAppointment());
+        goBackButton.setOnClickListener(v -> goBack());
 
-        // Load cardiologists
+
         loadCardiologists();
 
-        // Set item click listener for RadioGroup
+
         doctorRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             RadioButton selectedButton = findViewById(checkedId);
             selectedCardiologist = selectedButton.getText().toString();
@@ -108,8 +110,14 @@ public class CardiologistPage extends AppCompatActivity {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
             return;
         }
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        String patientId = mAuth.getCurrentUser().getUid();
+        String patientId = currentUser.getUid();
+
         DatabaseReference newAppointment = appointmentRef.push();
         newAppointment.child("date").setValue(date);
         newAppointment.child("time").setValue(time);
@@ -129,9 +137,16 @@ public class CardiologistPage extends AppCompatActivity {
                 intent.putExtra("specialty", "Cardiologist"); // Assuming you want to pass the specialty
                 startActivity(intent);
             } else {
+                Log.e("CardiologistPage", "Failed to book appointment", task.getException());
                 Toast.makeText(CardiologistPage.this, "Failed to book appointment", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void goBack() {
+        Intent intent = new Intent(CardiologistPage.this, PatientPage.class);
+        startActivity(intent);
+        finish();
     }
 
     private void loadCardiologists() {
