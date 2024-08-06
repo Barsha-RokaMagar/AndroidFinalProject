@@ -91,7 +91,7 @@ public class DoctorsPage extends AppCompatActivity {
             finish();
         });
 
-     
+
         String doctorId = currentUser.getUid();
         availabilityRef = FirebaseDatabase.getInstance().getReference().child("availability").child(doctorId);
         appointmentRef = FirebaseDatabase.getInstance().getReference().child("appointments");
@@ -199,34 +199,30 @@ public class DoctorsPage extends AppCompatActivity {
                     appointmentList.removeAllViews();
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         String date = snapshot.child("date").getValue(String.class);
-                        String time = snapshot.child("time").getValue(String.class);
-                        String cardiologist = snapshot.child("cardiologist").getValue(String.class);
+                        String startTime = snapshot.child("startTime").getValue(String.class);
+                        String endTime = snapshot.child("endTime").getValue(String.class);
                         String patientId = snapshot.child("patientId").getValue(String.class);
-                        String appointmentId = snapshot.getKey(); // Assuming this is your appointment ID
+                        String appointmentId = snapshot.getKey();
 
                         TableRow row = new TableRow(DoctorsPage.this);
 
                         TextView dateView = new TextView(DoctorsPage.this);
-                        dateView.setText(date);
+                        dateView.setText("Date: " + date);
                         dateView.setPadding(8, 8, 8, 8);
                         row.addView(dateView);
 
                         TextView timeView = new TextView(DoctorsPage.this);
-                        timeView.setText(time);
+                        timeView.setText("Time: " + startTime + " - " + endTime);
                         timeView.setPadding(8, 8, 8, 8);
                         row.addView(timeView);
 
-                        TextView cardiologistView = new TextView(DoctorsPage.this);
-                        cardiologistView.setText(cardiologist);
-                        cardiologistView.setPadding(8, 8, 8, 8);
-                        row.addView(cardiologistView);
 
                         TextView actionsView = new TextView(DoctorsPage.this);
                         actionsView.setText("View Patient");
                         actionsView.setPadding(8, 8, 8, 8);
                         actionsView.setOnClickListener(v -> {
-
                             Intent intent = new Intent(DoctorsPage.this, PatientDetailsPage.class);
+                            intent.putExtra("patientId", patientId);
                             intent.putExtra("appointmentId", appointmentId);
                             startActivity(intent);
                         });
@@ -247,6 +243,7 @@ public class DoctorsPage extends AppCompatActivity {
             }
         });
     }
+
 
 
 

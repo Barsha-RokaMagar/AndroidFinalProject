@@ -2,6 +2,7 @@ package com.example.androidfinalproject;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,10 +21,11 @@ public class PatientDetailsPage extends AppCompatActivity {
     private static final String TAG = "PatientDetailActivity";
 
     private TextView patientName, patientEmail;
-    private Button confirmButton, cancelButton;
+    private Button confirmButton, cancelButton, gobackButton;
 
     private DatabaseReference usersRef, appointmentRef;
     private String patientId, appointmentId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,7 @@ public class PatientDetailsPage extends AppCompatActivity {
         patientEmail = findViewById(R.id.patientEmail);
         confirmButton = findViewById(R.id.confirmButton);
         cancelButton = findViewById(R.id.cancelButton);
+        gobackButton = findViewById(R.id.gobackButton);
 
 
         patientId = getIntent().getStringExtra("patientId");
@@ -56,6 +59,7 @@ public class PatientDetailsPage extends AppCompatActivity {
 
         confirmButton.setOnClickListener(v -> confirmAppointment());
         cancelButton.setOnClickListener(v -> cancelAppointment());
+        gobackButton.setOnClickListener(v -> finish());
     }
 
     private void loadPatientDetails() {
@@ -101,5 +105,9 @@ public class PatientDetailsPage extends AppCompatActivity {
                 Toast.makeText(PatientDetailsPage.this, "Failed to cancel appointment", Toast.LENGTH_SHORT).show();
             }
         });
+
+
+
+
     }
 }
