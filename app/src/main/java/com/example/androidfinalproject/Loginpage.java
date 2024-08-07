@@ -69,7 +69,7 @@ public class Loginpage extends AppCompatActivity {
     public void checkUser() {
         String email = loginusername.getText().toString().trim();
         String password = loginpass.getText().toString().trim();
-
+      //  Toast.makeText(Loginpage.this, "Please fill all fields", Toast.LENGTH_LONG).show();
         Log.d("Loginpage", "Email: " + email);
         Log.d("Loginpage", "Password: " + password);
 

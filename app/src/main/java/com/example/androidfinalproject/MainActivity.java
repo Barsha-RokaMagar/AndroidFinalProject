@@ -125,8 +125,8 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("email", emailDB);
                     intent.putExtra("pass", passDB);
                     intent.putExtra("username", usernameDB);
-                    intent.putExtra("gender", genderDB); // Pass gender to EditProfilePage
-                    intent.putExtra("userType", userTypeDB); // Pass userType to EditProfilePage
+                    intent.putExtra("gender", genderDB);
+                    intent.putExtra("userType", userTypeDB);
                     startActivity(intent);
                     finish();
                 }

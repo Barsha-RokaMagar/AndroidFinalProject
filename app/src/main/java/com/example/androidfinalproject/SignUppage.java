@@ -44,9 +44,9 @@ public class SignUppage extends AppCompatActivity {
         username = findViewById(R.id.username);
         password = findViewById(R.id.password);
         email = findViewById(R.id.email);
-        specialty = findViewById(R.id.specialty);
         loginlink = findViewById(R.id.loginlink);
         signupbtn = findViewById(R.id.signup);
+        specialty = findViewById(R.id.specialty);
 
         userTypeRadioGroup = findViewById(R.id.userTypeRadioGroup);
         genderRadioGroup = findViewById(R.id.genderRadioGroup);
@@ -85,12 +85,14 @@ public class SignUppage extends AppCompatActivity {
                 final String passuser = password.getText().toString().trim();
                 final String userSpecialty = specialty.getText().toString().trim();
 
-
                 if (nameuser.isEmpty() || emailuser.isEmpty() || userusername.isEmpty() || passuser.isEmpty()) {
                     Toast.makeText(SignUppage.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
+                int selectedGenderId = genderRadioGroup.getCheckedRadioButtonId();
+                RadioButton selectedGender = findViewById(selectedGenderId);
+                String gender = selectedGender == null ? "" : selectedGender.getText().toString();
 
                 int selectedUserTypeId = userTypeRadioGroup.getCheckedRadioButtonId();
                 RadioButton selectedUserType = findViewById(selectedUserTypeId);
@@ -101,12 +103,6 @@ public class SignUppage extends AppCompatActivity {
                     Toast.makeText(SignUppage.this, "Please enter your specialty", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
-
-                int selectedGenderId = genderRadioGroup.getCheckedRadioButtonId();
-                RadioButton selectedGender = findViewById(selectedGenderId);
-                String gender = selectedGender == null ? "" : selectedGender.getText().toString();
-
 
                 mAuth.createUserWithEmailAndPassword(emailuser, passuser)
                         .addOnCompleteListener(SignUppage.this, new OnCompleteListener<AuthResult>() {
@@ -119,23 +115,17 @@ public class SignUppage extends AppCompatActivity {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
-                                                Toast.makeText(SignUppage.this, "Signup successful", Toast.LENGTH_SHORT).show();
-                                                Intent intent = new Intent(SignUppage.this, MainActivity.class);
-                                                intent.putExtra("name", nameuser);
-                                                intent.putExtra("email", emailuser);
-                                                intent.putExtra("password", passuser);
-                                                intent.putExtra("username", userusername);
-                                                intent.putExtra("gender", gender);
-                                                intent.putExtra("userType", userType);
+                                                Toast.makeText(SignUppage.this, "User registered successfully", Toast.LENGTH_SHORT).show();
+                                                Intent intent = new Intent(SignUppage.this, Loginpage.class);
                                                 startActivity(intent);
                                                 finish();
                                             } else {
-                                                Toast.makeText(SignUppage.this, "Failed to update user data: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(SignUppage.this, "User registration failed", Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     });
                                 } else {
-                                    Toast.makeText(SignUppage.this, "Failed to create user: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(SignUppage.this, "Authentication failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
