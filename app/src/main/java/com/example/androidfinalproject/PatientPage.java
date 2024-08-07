@@ -22,6 +22,8 @@ public class PatientPage extends AppCompatActivity {
 
         LinearLayout cardiologistLayout = findViewById(R.id.cardiologistLayout);
         LinearLayout dentistLayout = findViewById(R.id.dentistLayout);
+        LinearLayout psychologistLayout = findViewById(R.id.psychologistLayout);
+        LinearLayout dermatologistLayout = findViewById(R.id.dermatologistLayout);
         btn = findViewById(R.id.logoutBtn);
 
 
@@ -36,6 +38,20 @@ public class PatientPage extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(PatientPage.this, DentistPage.class);
+                startActivity(intent);
+            }
+        });
+        psychologistLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(PatientPage.this, PsychologistPage.class);
+                startActivity(intent);
+            }
+        });
+        dermatologistLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(PatientPage.this, DermatologistPage.class);
                 startActivity(intent);
             }
         });
