@@ -2,6 +2,7 @@ package com.example.androidfinalproject;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -69,11 +70,22 @@ public class Loginpage extends AppCompatActivity {
         String email = loginusername.getText().toString().trim();
         String password = loginpass.getText().toString().trim();
 
+        Log.d("Loginpage", "Email: " + email);
+        Log.d("Loginpage", "Password: " + password);
+
         if (email.isEmpty() || password.isEmpty()) {
+            Log.d("Loginpage", "Empty fields detected");
             Toast.makeText(Loginpage.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        if (!isValidEmail(email)) {
+            Log.d("Loginpage", "Invalid email detected");
+            Toast.makeText(Loginpage.this, "Invalid email format", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Log.d("Loginpage", "Proceeding with Firebase authentication");
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
@@ -82,10 +94,26 @@ public class Loginpage extends AppCompatActivity {
                             checkUserType(user.getUid());
                         }
                     } else {
-                        Toast.makeText(Loginpage.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                        Exception exception = task.getException();
+                        if (exception != null) {
+                            Log.e("Loginpage", "Firebase Authentication error: " + exception.getMessage());
+                            Toast.makeText(Loginpage.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.e("Loginpage", "Unknown authentication error");
+                            Toast.makeText(Loginpage.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
     }
+
+    private boolean isValidEmail(String email) {
+        boolean isValid = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        if (!isValid) {
+            Log.d("Loginpage", "Invalid email: " + email); // Debugging log
+        }
+        return isValid;
+    }
+
 
     private void checkUserType(String userId) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(userId);
