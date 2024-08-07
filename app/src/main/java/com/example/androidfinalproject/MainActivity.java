@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
         profilename.setText(intent.getStringExtra("name"));
         profilepass.setText(intent.getStringExtra("password"));
 
-        // Retrieve gender and userType from Intent extras
+
         String gender = intent.getStringExtra("gender");
         if (gender != null) {
             profilegender.setText(gender);

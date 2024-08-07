@@ -12,10 +12,10 @@ public class Model {
     private String specialty;
     private List<Appointment> appointments;
 
-    // Default constructor required for Firebase
+
     public Model() {}
 
-    // Constructor with all parameters
+
     public Model(String name, String email, String username, String password, String userType, String gender, String specialty, List<Appointment> appointments) {
         this.name = name;
         this.email = email;
@@ -27,7 +27,7 @@ public class Model {
         this.appointments = appointments;
     }
 
-    // Getters and setters
+
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
