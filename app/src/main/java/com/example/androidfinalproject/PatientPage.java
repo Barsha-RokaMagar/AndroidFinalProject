@@ -24,6 +24,10 @@ public class PatientPage extends AppCompatActivity {
         LinearLayout dentistLayout = findViewById(R.id.dentistLayout);
         LinearLayout psychologistLayout = findViewById(R.id.psychologistLayout);
         LinearLayout dermatologistLayout = findViewById(R.id.dermatologistLayout);
+        LinearLayout pediatricianLayout = findViewById(R.id.pediatricianLayout);
+        LinearLayout neurologistLayout = findViewById(R.id.neurologistLayout);
+        LinearLayout opthalmologistLayout = findViewById(R.id.opthalmologistLayout);
+        LinearLayout gynecologistLayout = findViewById(R.id.gynecologistLayout);
         btn = findViewById(R.id.logoutBtn);
 
 
@@ -55,6 +59,35 @@ public class PatientPage extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        pediatricianLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(PatientPage.this, PediatricianPage.class);
+                startActivity(intent);
+            }
+        });
+        neurologistLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(PatientPage.this, NeurologistPage.class);
+                startActivity(intent);
+            }
+        });
+        opthalmologistLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(PatientPage.this, OpthalmologistPage.class);
+                startActivity(intent);
+            }
+        });
+        gynecologistLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(PatientPage.this, GynecologistPage.class);
+                startActivity(intent);
+            }
+        });
+
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
