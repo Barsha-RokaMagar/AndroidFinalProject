@@ -10,11 +10,11 @@ public class Appointment {
     private String time;
     private String details;
 
-    // Default constructor
+
     public Appointment() {
     }
 
-    // Parameterized constructor
+
     public Appointment(String appointmentId, String doctorName, String patientName, Date date, String time, String details) {
         this.appointmentId = appointmentId;
         this.doctorName = doctorName;
@@ -24,7 +24,7 @@ public class Appointment {
         this.details = details;
     }
 
-    // Getters and setters
+
     public String getAppointmentId() {
         return appointmentId;
     }

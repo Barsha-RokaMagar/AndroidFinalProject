@@ -109,7 +109,7 @@ public class Loginpage extends AppCompatActivity {
     private boolean isValidEmail(String email) {
         boolean isValid = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
         if (!isValid) {
-            Log.d("Loginpage", "Invalid email: " + email); // Debugging log
+            Log.d("Loginpage", "Invalid email: " + email);
         }
         return isValid;
     }
