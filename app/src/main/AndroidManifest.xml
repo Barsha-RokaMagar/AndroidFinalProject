@@ -15,6 +15,12 @@
         android:theme="@style/Theme.AndroidFinalProject"
         tools:targetApi="31">
         <activity
+            android:name=".GynecologistPage"
+            android:exported="false" />
+        <activity
+            android:name=".OpthalmologistPage"
+            android:exported="false" />
+        <activity
             android:name=".NeurologistPage"
             android:exported="false" />
         <activity
