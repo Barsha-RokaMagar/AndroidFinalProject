@@ -13,7 +13,7 @@ public class Model {
     private List<Appointment> appointments;
 
 
-    public Model() {}
+    public Model(String nameuser, String emailuser, String userusername, String passuser, String userType, String gender, String userSpecialty) {}
 
 
     public Model(String name, String email, String username, String password, String userType, String gender, String specialty, List<Appointment> appointments) {

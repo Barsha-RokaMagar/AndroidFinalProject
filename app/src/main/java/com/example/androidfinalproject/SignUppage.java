@@ -20,8 +20,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.ArrayList;
-
 public class SignUppage extends AppCompatActivity {
 
     EditText name, username, password, email, specialty;
@@ -46,9 +44,9 @@ public class SignUppage extends AppCompatActivity {
         username = findViewById(R.id.username);
         password = findViewById(R.id.password);
         email = findViewById(R.id.email);
+        specialty = findViewById(R.id.specialty);
         loginlink = findViewById(R.id.loginlink);
         signupbtn = findViewById(R.id.signup);
-        specialty = findViewById(R.id.specialty);
 
         userTypeRadioGroup = findViewById(R.id.userTypeRadioGroup);
         genderRadioGroup = findViewById(R.id.genderRadioGroup);
@@ -87,24 +85,28 @@ public class SignUppage extends AppCompatActivity {
                 final String passuser = password.getText().toString().trim();
                 final String userSpecialty = specialty.getText().toString().trim();
 
+
                 if (nameuser.isEmpty() || emailuser.isEmpty() || userusername.isEmpty() || passuser.isEmpty()) {
                     Toast.makeText(SignUppage.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                int selectedGenderId = genderRadioGroup.getCheckedRadioButtonId();
-                RadioButton selectedGender = findViewById(selectedGenderId);
-                String gender = selectedGender == null ? "" : selectedGender.getText().toString();
 
                 int selectedUserTypeId = userTypeRadioGroup.getCheckedRadioButtonId();
                 RadioButton selectedUserType = findViewById(selectedUserTypeId);
                 String userType = selectedUserType == null ? "" : selectedUserType.getText().toString();
 
-                // Check if Doctor is selected and validate specialty field
+
                 if (userType.equals("Doctor") && userSpecialty.isEmpty()) {
                     Toast.makeText(SignUppage.this, "Please enter your specialty", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+
+                int selectedGenderId = genderRadioGroup.getCheckedRadioButtonId();
+                RadioButton selectedGender = findViewById(selectedGenderId);
+                String gender = selectedGender == null ? "" : selectedGender.getText().toString();
+
 
                 mAuth.createUserWithEmailAndPassword(emailuser, passuser)
                         .addOnCompleteListener(SignUppage.this, new OnCompleteListener<AuthResult>() {
@@ -112,23 +114,28 @@ public class SignUppage extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     String uid = mAuth.getCurrentUser().getUid();
-                                    // Create a new Model instance with empty appointments list
-                                    Model user = new Model(nameuser, emailuser, userusername, passuser, userType, gender, userSpecialty, new ArrayList<>());
+                                    Model user = new Model(nameuser, emailuser, userusername, passuser, userType, gender, userSpecialty);
                                     reference.child(uid).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
-                                                Toast.makeText(SignUppage.this, "User registered successfully", Toast.LENGTH_SHORT).show();
-                                                Intent intent = new Intent(SignUppage.this, Loginpage.class);
+                                                Toast.makeText(SignUppage.this, "Signup successful", Toast.LENGTH_SHORT).show();
+                                                Intent intent = new Intent(SignUppage.this, MainActivity.class);
+                                                intent.putExtra("name", nameuser);
+                                                intent.putExtra("email", emailuser);
+                                                intent.putExtra("password", passuser);
+                                                intent.putExtra("username", userusername);
+                                                intent.putExtra("gender", gender);
+                                                intent.putExtra("userType", userType);
                                                 startActivity(intent);
                                                 finish();
                                             } else {
-                                                Toast.makeText(SignUppage.this, "User registration failed", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(SignUppage.this, "Failed to update user data: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     });
                                 } else {
-                                    Toast.makeText(SignUppage.this, "Authentication failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(SignUppage.this, "Failed to create user: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
