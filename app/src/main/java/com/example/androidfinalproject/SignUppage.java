@@ -20,6 +20,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
+
 public class SignUppage extends AppCompatActivity {
 
     EditText name, username, password, email, specialty;
@@ -98,7 +100,7 @@ public class SignUppage extends AppCompatActivity {
                 RadioButton selectedUserType = findViewById(selectedUserTypeId);
                 String userType = selectedUserType == null ? "" : selectedUserType.getText().toString();
 
-
+                // Check if Doctor is selected and validate specialty field
                 if (userType.equals("Doctor") && userSpecialty.isEmpty()) {
                     Toast.makeText(SignUppage.this, "Please enter your specialty", Toast.LENGTH_SHORT).show();
                     return;
@@ -110,7 +112,8 @@ public class SignUppage extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     String uid = mAuth.getCurrentUser().getUid();
-                                    Model user = new Model(nameuser, emailuser, userusername, passuser, userType, gender, userSpecialty);
+
+                                    Model user = new Model(nameuser, emailuser, userusername, passuser, userType, gender, userSpecialty, new ArrayList<>());
                                     reference.child(uid).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
