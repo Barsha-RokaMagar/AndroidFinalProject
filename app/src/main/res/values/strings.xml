@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">AndroidFinalProject</string>
+    <string name="cardiologist">Cardiologist</string>
+    <string name="dentist">Dentist</string>
+    <string name="psychologist">Psychologist</string>
+    <string name="dermatologist">Psychologist</string>
+    <string name="pediatrician">Psychologist</string>
+    <string name="neurologist">Psychologist</string>
+    <string name="opthalmologist">Psychologist</string>
+    <string name="gynecologist">Psychologist</string>
+</resources>
