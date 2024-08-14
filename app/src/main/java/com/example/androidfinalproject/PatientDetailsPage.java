@@ -53,9 +53,7 @@ public class PatientDetailsPage extends AppCompatActivity {
             return;
         }
 
-
         loadPatientDetails();
-
 
         confirmButton.setOnClickListener(v -> confirmAppointment());
         cancelButton.setOnClickListener(v -> cancelAppointment());
