@@ -2,6 +2,7 @@ package com.example.androidfinalproject;
 
 import android.content.Intent;
 import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -23,6 +24,9 @@ public class MainActivity extends AppCompatActivity {
     TextView profileusername, profilename, profilepass, profileemail, profilegender, profileusertype;
     TextView titlename, titleusername;
     Button signout, editprofile, deleteprofile;
+
+    private static final int REQUEST_CODE_NOTIFICATION_PERMISSION = 1001;
+
 
 
     @Override
@@ -96,6 +100,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+
     public void passDataUser() {
         String mainusername = profilename.getText().toString().trim();
         DatabaseReference reference = FirebaseDatabase.getInstance()
@@ -162,5 +168,18 @@ public class MainActivity extends AppCompatActivity {
         } else {
             profileusertype.setText("Not specified");
         }
+
+        NotificationPermissionHelper.requestNotificationPermission(this);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        NotificationPermissionHelper.handlePermissionResult(requestCode, permissions, grantResults, this);
     }
 }
+
+
+
+

@@ -9,6 +9,8 @@
     <color name="lightgrey">#AEB1B1</color>
     <color name="yellow">#F1B604</color>
     <color name="grey">#516060</color>
+    <color name="notification_color">#D61557</color>
+
 
 
 </resources>
