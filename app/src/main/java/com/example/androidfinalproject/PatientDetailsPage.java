@@ -128,10 +128,10 @@ public class PatientDetailsPage extends AppCompatActivity {
     }
 
     private void sendNotification(String title, String messageBody) {
-        // Check if the permission is granted before sending notification
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, "Notification permission not granted", Toast.LENGTH_SHORT).show();
-            return; // Exit if permission is not granted
+            return;
         }
 
         Intent intent = new Intent(this, MainActivity.class);
@@ -165,7 +165,7 @@ public class PatientDetailsPage extends AppCompatActivity {
 
         if (requestCode == REQUEST_CODE_NOTIFICATION_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted, send the notification
+
                 sendNotification("Appointment Status", "Your appointment status has been updated.");
             } else {
                 Toast.makeText(this, "Notification permission denied", Toast.LENGTH_SHORT).show();

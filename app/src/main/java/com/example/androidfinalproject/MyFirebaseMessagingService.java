@@ -44,9 +44,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-        // Build the notification
+
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.notification) // Ensure this drawable exists
+                .setSmallIcon(R.drawable.notification)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.notification))
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent)
@@ -56,22 +56,21 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
-        // Create the notification channel if needed
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Default Channel", NotificationManager.IMPORTANCE_HIGH);
             notificationManager.createNotificationChannel(channel);
         }
 
-        // Notify the user
         try {
             notificationManager.notify(0, notificationBuilder.build());
         } catch (SecurityException e) {
-            e.printStackTrace(); // Log the exception
+            e.printStackTrace();
         }
     }
 
     private RemoteViews getCustomNotificationView(String title, String messageBody) {
-        // Customize the notification view with your layout
+
         RemoteViews customView = new RemoteViews(getPackageName(), R.layout.activity_my_firebase_messaging_service);
         customView.setTextViewText(R.id.notification_title, title);
         customView.setTextViewText(R.id.notification_message, messageBody);
@@ -79,7 +78,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     private void showPermissionExplanation() {
-        // Show app notification settings to the user
+
         Intent intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
         intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
