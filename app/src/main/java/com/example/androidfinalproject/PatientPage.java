@@ -2,6 +2,8 @@ package com.example.androidfinalproject;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,7 +14,7 @@ import android.widget.LinearLayout;
 
 
 public class PatientPage extends AppCompatActivity {
-    Button btn;
+    Button logout, viewprofile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +30,8 @@ public class PatientPage extends AppCompatActivity {
         LinearLayout neurologistLayout = findViewById(R.id.neurologistLayout);
         LinearLayout opthalmologistLayout = findViewById(R.id.opthalmologistLayout);
         LinearLayout gynecologistLayout = findViewById(R.id.gynecologistLayout);
-        btn = findViewById(R.id.logoutBtn);
+        logout = findViewById(R.id.logoutBtn);
+        viewprofile = findViewById(R.id.viewprofile);
 
 
         cardiologistLayout.setOnClickListener(new View.OnClickListener() {
@@ -89,13 +92,22 @@ public class PatientPage extends AppCompatActivity {
         });
 
 
-        btn.setOnClickListener(new View.OnClickListener() {
+        logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(PatientPage.this, Loginpage.class);
                 startActivity(intent);
 
 
+            }
+        });
+
+        viewprofile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("PatientPage", "View Profile button clicked");
+                Intent intent = new Intent(PatientPage.this, PatientsProfile.class);
+                startActivity(intent);
             }
         });
 

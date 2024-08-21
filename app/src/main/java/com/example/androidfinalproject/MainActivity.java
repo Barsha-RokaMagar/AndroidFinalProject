@@ -28,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_NOTIFICATION_PERMISSION = 1001;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     public void passDataUser() {
         String mainusername = profilename.getText().toString().trim();
         DatabaseReference reference = FirebaseDatabase.getInstance()
@@ -169,16 +167,10 @@ public class MainActivity extends AppCompatActivity {
             profileusertype.setText("Not specified");
         }
 
-        NotificationPermissionHelper.requestNotificationPermission(this);
-    }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        NotificationPermissionHelper.handlePermissionResult(requestCode, permissions, grantResults, this);
     }
 }
+
 
 
 
