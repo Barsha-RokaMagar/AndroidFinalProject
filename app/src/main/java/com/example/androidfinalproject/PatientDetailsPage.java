@@ -93,11 +93,14 @@ public class PatientDetailsPage extends AppCompatActivity {
         });
     }
 
+
+
     private void confirmAppointment() {
         appointmentRef.child(appointmentId).child("status").setValue("Confirmed").addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
+                updatePatientProfile("Appointment Confirmed", "Your appointment has been confirmed.");
                 Toast.makeText(PatientDetailsPage.this, "Appointment confirmed", Toast.LENGTH_SHORT).show();
-                requestNotificationPermission("Appointment Confirmed", "Your appointment has been confirmed.");
+                // Do not navigate away, just update the status
             } else {
                 Toast.makeText(PatientDetailsPage.this, "Failed to confirm appointment", Toast.LENGTH_SHORT).show();
             }
@@ -107,69 +110,17 @@ public class PatientDetailsPage extends AppCompatActivity {
     private void cancelAppointment() {
         appointmentRef.child(appointmentId).removeValue().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
+                updatePatientProfile("Appointment Cancelled", "Your appointment has been cancelled.");
                 Toast.makeText(PatientDetailsPage.this, "Appointment cancelled", Toast.LENGTH_SHORT).show();
-                requestNotificationPermission("Appointment Cancelled", "Your appointment has been cancelled.");
+                // Do not navigate away, just update the status
             } else {
                 Toast.makeText(PatientDetailsPage.this, "Failed to cancel appointment", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void requestNotificationPermission(String title, String messageBody) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, REQUEST_CODE_NOTIFICATION_PERMISSION);
-            } else {
-                sendNotification(title, messageBody);
-            }
-        } else {
-            sendNotification(title, messageBody);
-        }
-    }
-
-    private void sendNotification(String title, String messageBody) {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, "Notification permission not granted", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.notification) // Ensure this drawable exists
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.notification))
-                .setAutoCancel(true)
-                .setContentIntent(pendingIntent)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setContentTitle(title)
-                .setContentText(messageBody)
-                .setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody));
-
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Default Channel", NotificationManager.IMPORTANCE_HIGH);
-            notificationManager.createNotificationChannel(channel);
-        }
-
-        notificationManager.notify(0, notificationBuilder.build());
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == REQUEST_CODE_NOTIFICATION_PERMISSION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                sendNotification("Appointment Status", "Your appointment status has been updated.");
-            } else {
-                Toast.makeText(this, "Notification permission denied", Toast.LENGTH_SHORT).show();
-            }
-        }
+    private void updatePatientProfile(String status, String message) {
+        DatabaseReference patientProfileRef = FirebaseDatabase.getInstance().getReference().child("patients").child(patientId).child("appointments").child(appointmentId);
+        patientProfileRef.child("statusMessage").setValue(message);
     }
 }

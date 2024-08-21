@@ -187,45 +187,46 @@ public class DoctorsPage extends AppCompatActivity {
 
     private void loadAvailability() {
         String doctorId = mAuth.getCurrentUser().getUid();
+        availabilityRef = FirebaseDatabase.getInstance().getReference("availability").child(doctorId);
+
         availabilityRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try {
                     StringBuilder builder = new StringBuilder();
+
                     for (DataSnapshot dateSnapshot : dataSnapshot.getChildren()) {
                         String date = dateSnapshot.getKey();
                         String startTimeString = dateSnapshot.child("startTime").getValue(String.class);
                         String endTimeString = dateSnapshot.child("endTime").getValue(String.class);
 
-                        // Debugging logs
                         Log.d(TAG, "Date: " + date);
-                        Log.d(TAG, "Start Time: " + startTimeString);
-                        Log.d(TAG, "End Time: " + endTimeString);
+                        Log.d(TAG, "Start Time String: " + startTimeString);
+                        Log.d(TAG, "End Time String: " + endTimeString);
 
                         if (startTimeString != null && endTimeString != null) {
                             try {
-                                Date startTime = TimeUtils.parseTime(startTimeString);
-                                Date endTime = TimeUtils.parseTime(endTimeString);
+                                String formattedDate = formatDate(date);
+                                String formattedStartTime = formatTime(startTimeString);
+                                String formattedEndTime = formatTime(endTimeString);
 
-                                String formattedStartTime = TimeUtils.formatTime(startTime);
-                                String formattedEndTime = TimeUtils.formatTime(endTime);
-
-                                builder.append(date)
-                                        .append(": ")
+                                builder.append(formattedDate)
+                                        .append(", ")
                                         .append(formattedStartTime)
                                         .append(" - ")
                                         .append(formattedEndTime)
                                         .append("\n");
-                            } catch (ParseException e) {
-                                Log.e(TAG, "Error parsing time", e);
+                            } catch (Exception e) {
+                                Log.e(TAG, "Error formatting time", e);
                                 builder.append(date)
-                                        .append(": Error parsing time\n");
+                                        .append(": Error formatting time\n");
                             }
                         } else {
                             builder.append(date)
                                     .append(": Start time or End time missing\n");
                         }
                     }
+
                     if (builder.length() > 0) {
                         currentAvailability.setText(builder.toString());
                     } else {
@@ -244,6 +245,36 @@ public class DoctorsPage extends AppCompatActivity {
             }
         });
     }
+
+    private String formatDate(String dateString) {
+        // Assuming the date format in Firebase is "yyyy-MM-dd" (e.g., "2024-08-29")
+        SimpleDateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        SimpleDateFormat targetFormat = new SimpleDateFormat("MMMM d", Locale.getDefault()); // "August 29"
+        try {
+            Date date = originalFormat.parse(dateString);
+            return targetFormat.format(date);
+        } catch (ParseException e) {
+            Log.e(TAG, "Error parsing date", e);
+            return dateString; // Fallback to original date string if parsing fails
+        }
+    }
+
+    private String formatTime(String timeString) {
+        // Assuming the time format in Firebase is "HH:mm" (e.g., "09:30")
+        SimpleDateFormat originalFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        SimpleDateFormat targetFormat = new SimpleDateFormat("h:mm a", Locale.getDefault()); // "9:30 AM"
+        try {
+            Date time = originalFormat.parse(timeString);
+            return targetFormat.format(time);
+        } catch (ParseException e) {
+            Log.e(TAG, "Error parsing time", e);
+            return timeString; // Fallback to original time string if parsing fails
+        }
+    }
+
+
+
+
 
 
 

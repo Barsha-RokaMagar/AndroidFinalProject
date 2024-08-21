@@ -13,8 +13,11 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 
+
 public class PatientPage extends AppCompatActivity {
     Button logout, viewprofile;
+    String patientId = "";
+    String appointmentId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,10 +109,14 @@ public class PatientPage extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d("PatientPage", "View Profile button clicked");
+
                 Intent intent = new Intent(PatientPage.this, PatientsProfile.class);
+                intent.putExtra("patientId", patientId);
+                intent.putExtra("appointmentId", appointmentId);
                 startActivity(intent);
             }
         });
+
 
 
 
