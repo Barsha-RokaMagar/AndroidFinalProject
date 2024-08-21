@@ -38,7 +38,7 @@ public class DoctorsPage extends AppCompatActivity {
 
     private static final String TAG = "DoctorsPage";
     private String appointmentId;
-
+    public String day , year,month;
 
     private TextView clinicName, welcomeText, currentAvailability;
     private EditText dateInput, startTimeInput, endTimeInput;
@@ -187,6 +187,7 @@ public class DoctorsPage extends AppCompatActivity {
 
     private void loadAvailability() {
         String doctorId = mAuth.getCurrentUser().getUid();
+
         availabilityRef = FirebaseDatabase.getInstance().getReference("availability").child(doctorId);
 
         availabilityRef.addValueEventListener(new ValueEventListener() {
@@ -195,35 +196,45 @@ public class DoctorsPage extends AppCompatActivity {
                 try {
                     StringBuilder builder = new StringBuilder();
 
-                    for (DataSnapshot dateSnapshot : dataSnapshot.getChildren()) {
-                        String date = dateSnapshot.getKey();
-                        String startTimeString = dateSnapshot.child("startTime").getValue(String.class);
-                        String endTimeString = dateSnapshot.child("endTime").getValue(String.class);
+                    for (DataSnapshot daySnapshot : dataSnapshot.getChildren()) {
+                         day = daySnapshot.getKey();
 
-                        Log.d(TAG, "Date: " + date);
-                        Log.d(TAG, "Start Time String: " + startTimeString);
-                        Log.d(TAG, "End Time String: " + endTimeString);
+                        for (DataSnapshot monthSnapshot : daySnapshot.getChildren()) {
+                             month = monthSnapshot.getKey();
 
-                        if (startTimeString != null && endTimeString != null) {
-                            try {
-                                String formattedDate = formatDate(date);
-                                String formattedStartTime = formatTime(startTimeString);
-                                String formattedEndTime = formatTime(endTimeString);
+                            for (DataSnapshot yearSnapshot : monthSnapshot.getChildren()) {
+                                 year = yearSnapshot.getKey();
 
-                                builder.append(formattedDate)
-                                        .append(", ")
-                                        .append(formattedStartTime)
-                                        .append(" - ")
-                                        .append(formattedEndTime)
-                                        .append("\n");
-                            } catch (Exception e) {
-                                Log.e(TAG, "Error formatting time", e);
-                                builder.append(date)
-                                        .append(": Error formatting time\n");
+                                String startTimeString = yearSnapshot.child("startTime").getValue(String.class);
+                                String endTimeString = yearSnapshot.child("endTime").getValue(String.class);
+
+                                Log.d(TAG, "Date: " + day + "/" + month + "/" + year);
+                                Log.d(TAG, "Start Time String: " + startTimeString);
+                                Log.d(TAG, "End Time String: " + endTimeString);
+
+                                if (startTimeString != null && endTimeString != null) {
+                                    try {
+
+                                        String formattedDate = TimeUtils.formatDate(day, month, year);
+                                        String formattedStartTime = formatTime(startTimeString);
+                                        String formattedEndTime = formatTime(endTimeString);
+
+                                        builder.append(formattedDate)
+                                                .append(", ")
+                                                .append(formattedStartTime)
+                                                .append(" - ")
+                                                .append(formattedEndTime)
+                                                .append("\n");
+                                    } catch (Exception e) {
+                                        Log.e(TAG, "Error formatting time", e);
+                                        builder.append(day + "/" + month + "/" + year)
+                                                .append(": Error formatting time\n");
+                                    }
+                                } else {
+                                    builder.append(day + "/" + month + "/" + year)
+                                            .append(": Start time or End time missing\n");
+                                }
                             }
-                        } else {
-                            builder.append(date)
-                                    .append(": Start time or End time missing\n");
                         }
                     }
 
@@ -246,8 +257,10 @@ public class DoctorsPage extends AppCompatActivity {
         });
     }
 
+
+
     private String formatDate(String dateString) {
-        // Assuming the date format in Firebase is "yyyy-MM-dd" (e.g., "2024-08-29")
+
         SimpleDateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         SimpleDateFormat targetFormat = new SimpleDateFormat("MMMM d", Locale.getDefault()); // "August 29"
         try {
@@ -255,12 +268,12 @@ public class DoctorsPage extends AppCompatActivity {
             return targetFormat.format(date);
         } catch (ParseException e) {
             Log.e(TAG, "Error parsing date", e);
-            return dateString; // Fallback to original date string if parsing fails
+            return dateString;
         }
     }
 
     private String formatTime(String timeString) {
-        // Assuming the time format in Firebase is "HH:mm" (e.g., "09:30")
+
         SimpleDateFormat originalFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
         SimpleDateFormat targetFormat = new SimpleDateFormat("h:mm a", Locale.getDefault()); // "9:30 AM"
         try {
@@ -268,14 +281,9 @@ public class DoctorsPage extends AppCompatActivity {
             return targetFormat.format(time);
         } catch (ParseException e) {
             Log.e(TAG, "Error parsing time", e);
-            return timeString; // Fallback to original time string if parsing fails
+            return timeString;
         }
     }
-
-
-
-
-
 
 
 
@@ -288,7 +296,7 @@ public class DoctorsPage extends AppCompatActivity {
                     appointmentList.removeAllViews();
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         String date = snapshot.child("date").getValue(String.class);
-                        String startTime = snapshot.child("startTime").getValue(String.class);
+                        String time = snapshot.child("time").getValue(String.class);
                         String endTime = snapshot.child("endTime").getValue(String.class);
                         String patientId = snapshot.child("patientId").getValue(String.class);
                         String appointmentId = snapshot.getKey();
@@ -301,7 +309,7 @@ public class DoctorsPage extends AppCompatActivity {
                         row.addView(dateView);
 
                         TextView timeView = new TextView(DoctorsPage.this);
-                        timeView.setText("Time: " + startTime + " - " + endTime);
+                        timeView.setText("Time: " + time );
                         timeView.setPadding(8, 8, 8, 8);
                         row.addView(timeView);
 

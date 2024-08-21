@@ -38,13 +38,13 @@ public class AppointmentAdapter extends ArrayAdapter<Appointment> {
 
         Appointment appointment = appointmentList.get(position);
 
-        TextView patientName = convertView.findViewById(R.id.patientName);
+       // TextView patientName = convertView.findViewById(R.id.patientName);
         TextView selectedDoctor = convertView.findViewById(R.id.selectedDoctor);
         TextView appointmentDate = convertView.findViewById(R.id.appointmentDate);
         TextView appointmentTime = convertView.findViewById(R.id.appointmentTime);
         TextView status = convertView.findViewById(R.id.status);
 
-        patientName.setText("Name: " + appointment.getPatientName());
+       // patientName.setText("Name: " + appointment.getPatientName());
         selectedDoctor.setText("Doctor: " + appointment.getDoctorName());
         appointmentDate.setText("Date: " + appointment.getDate().toString());
         appointmentTime.setText("Time: " + appointment.getTime());

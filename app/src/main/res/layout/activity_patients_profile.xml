@@ -16,6 +16,15 @@
             android:layout_gravity="center"
             android:paddingBottom="16dp" />
 
+    <TextView
+        android:id="@+id/txtpatientname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:layout_gravity="center"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:paddingBottom="8dp" />
         <ListView
             android:id="@+id/appointmentsListView"
             android:layout_width="match_parent"
