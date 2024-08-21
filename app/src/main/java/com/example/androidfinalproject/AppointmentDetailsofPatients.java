@@ -1,6 +1,5 @@
 package com.example.androidfinalproject;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -8,7 +7,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class AppointmentDetails extends AppCompatActivity {
+public class AppointmentDetailsofPatients extends AppCompatActivity {
 
     private TextView appointmentDetailsTextView;
     private Button goBackButton;
@@ -16,7 +15,7 @@ public class AppointmentDetails extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_appointment_details);
+        setContentView(R.layout.activity_appointment_details_ofpatients);
 
 
         appointmentDetailsTextView = findViewById(R.id.tv_appointment_details);

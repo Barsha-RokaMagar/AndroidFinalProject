@@ -127,7 +127,7 @@ public class GynecologistPage extends AppCompatActivity {
 
                 Log.d("GynecologistPage", "Appointment booked - Date: " + date + ", Time: " + time + ", Gynecologist: " + selectedGynecologist);
 
-                Intent intent = new Intent(GynecologistPage.this, AppointmentDetails.class);
+                Intent intent = new Intent(GynecologistPage.this, AppointmentDetailsofPatients.class);
                 intent.putExtra("date", date);
                 intent.putExtra("time", time);
                 intent.putExtra("gynecologistName", selectedGynecologist); // Updated to gynecologist

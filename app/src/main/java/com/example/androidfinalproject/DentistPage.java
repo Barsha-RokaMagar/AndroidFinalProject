@@ -126,7 +126,7 @@ public class DentistPage extends AppCompatActivity {
 
                 Log.d("DentistPage", "Appointment booked - Date: " + date + ", Time: " + time + ", Dentist: " + selectedDentist);
 
-                Intent intent = new Intent(DentistPage.this, AppointmentDetails.class);
+                Intent intent = new Intent(DentistPage.this, AppointmentDetailsofPatients.class);
                 intent.putExtra("date", date);
                 intent.putExtra("time", time);
                 intent.putExtra("doctorName", selectedDentist);

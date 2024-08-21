@@ -127,7 +127,7 @@ public class NeurologistPage extends AppCompatActivity {
 
                 Log.d("NeurologistPage", "Appointment booked - Date: " + date + ", Time: " + time + ", Neurologist: " + selectedNeurologist);
 
-                Intent intent = new Intent(NeurologistPage.this, AppointmentDetails.class);
+                Intent intent = new Intent(NeurologistPage.this, AppointmentDetailsofPatients.class);
                 intent.putExtra("date", date);
                 intent.putExtra("time", time);
                 intent.putExtra("neurologistName", selectedNeurologist); // Updated to neurologist

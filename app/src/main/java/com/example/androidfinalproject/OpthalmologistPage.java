@@ -127,7 +127,7 @@ public class OpthalmologistPage extends AppCompatActivity {
 
                 Log.d("OphthalmologistPage", "Appointment booked - Date: " + date + ", Time: " + time + ", Ophthalmologist: " + selectedOphthalmologist);
 
-                Intent intent = new Intent(OpthalmologistPage.this, AppointmentDetails.class);
+                Intent intent = new Intent(OpthalmologistPage.this, AppointmentDetailsofPatients.class);
                 intent.putExtra("date", date);
                 intent.putExtra("time", time);
                 intent.putExtra("ophthalmologistName", selectedOphthalmologist); // Updated to ophthalmologist

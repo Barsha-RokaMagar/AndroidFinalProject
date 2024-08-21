@@ -127,7 +127,7 @@ public class PediatricianPage extends AppCompatActivity {
 
                 Log.d("PediatricianPage", "Appointment booked - Date: " + date + ", Time: " + time + ", Pediatrician: " + selectedPediatrician);
 
-                Intent intent = new Intent(PediatricianPage.this, AppointmentDetails.class);
+                Intent intent = new Intent(PediatricianPage.this, AppointmentDetailsofPatients.class);
                 intent.putExtra("date", date);
                 intent.putExtra("time", time);
                 intent.putExtra("pediatricianName", selectedPediatrician); // Updated to pediatrician

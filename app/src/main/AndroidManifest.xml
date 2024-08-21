@@ -42,7 +42,7 @@
             android:name=".DentistPage"
             android:exported="false" />
         <activity
-            android:name=".AppointmentDetails"
+            android:name=".AppointmentDetailsofPatients"
             android:exported="false" />
         <activity
             android:name=".CardiologistPage"

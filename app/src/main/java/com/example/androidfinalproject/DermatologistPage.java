@@ -127,7 +127,7 @@ public class DermatologistPage extends AppCompatActivity {
 
                 Log.d("DermatologistPage", "Appointment booked - Date: " + date + ", Time: " + time + ", Dermatologist: " + selectedDermatologist);
 
-                Intent intent = new Intent(DermatologistPage.this, AppointmentDetails.class);
+                Intent intent = new Intent(DermatologistPage.this, AppointmentDetailsofPatients.class);
                 intent.putExtra("date", date);
                 intent.putExtra("time", time);
                 intent.putExtra("dermatologistName", selectedDermatologist); // Updated to dermatologist

@@ -130,7 +130,7 @@ public class CardiologistPage extends AppCompatActivity {
                 Log.d("CardiologistPage", "Appointment booked - Date: " + date + ", Time: " + time + ", Cardiologist: " + selectedCardiologist);
 
                 // Navigate to AppointmentDetails activity with appointment details
-                Intent intent = new Intent(CardiologistPage.this, AppointmentDetails.class);
+                Intent intent = new Intent(CardiologistPage.this, AppointmentDetailsofPatients.class);
                 intent.putExtra("date", date);
                 intent.putExtra("time", time);
                 intent.putExtra("doctorName", selectedCardiologist);

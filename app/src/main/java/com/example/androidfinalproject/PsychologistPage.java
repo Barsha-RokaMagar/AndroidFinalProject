@@ -127,7 +127,7 @@ public class PsychologistPage extends AppCompatActivity {
 
                 Log.d("PsychologistPage", "Appointment booked - Date: " + date + ", Time: " + time + ", Psychologist: " + selectedPsychologist);
 
-                Intent intent = new Intent(PsychologistPage.this, AppointmentDetails.class);
+                Intent intent = new Intent(PsychologistPage.this, AppointmentDetailsofPatients.class);
                 intent.putExtra("date", date);
                 intent.putExtra("time", time);
                 intent.putExtra("psychologistName", selectedPsychologist); // Updated to psychologist
