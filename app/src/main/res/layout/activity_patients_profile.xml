@@ -1,10 +1,42 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+<!-- activity_patient_profile.xml -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PatientsProfile">
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="16dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/patientName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name: "
+        android:textSize="18sp"
+        android:paddingBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/patientEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email: "
+        android:textSize="18sp"
+        android:paddingBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/selectedDoctor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Selected Doctor: "
+        android:textSize="18sp"
+        android:paddingBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/statusMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Status: "
+        android:textSize="18sp"
+        android:textColor="@android:color/holo_red_dark"
+        android:paddingTop="16dp"/>
+</LinearLayout>
