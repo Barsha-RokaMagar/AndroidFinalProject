@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -45,7 +46,7 @@ public class AppointmentAdapter extends ArrayAdapter<Appointment> {
 
         patientName.setText("Name: " + appointment.getPatientName());
         selectedDoctor.setText("Doctor: " + appointment.getDoctorName());
-        appointmentDate.setText("Date: " + appointment.getDate());
+        appointmentDate.setText("Date: " + appointment.getDate().toString());
         appointmentTime.setText("Time: " + appointment.getTime());
         status.setText("Status: " + appointment.getStatus());
 

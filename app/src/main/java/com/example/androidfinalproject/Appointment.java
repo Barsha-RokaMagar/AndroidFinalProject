@@ -6,16 +6,16 @@ public class Appointment {
     private String appointmentId;
     private String doctorName;
     private String patientName;
-    private Date date;
+    private String date;
     private String time;
     private String details;
-
+    private String status;
 
     public Appointment() {
     }
 
 
-    public Appointment(String appointmentId, String doctorName, String patientName, Date date, String time, String details) {
+    public Appointment(String appointmentId, String doctorName, String patientName, String date, String time, String details) {
         this.appointmentId = appointmentId;
         this.doctorName = doctorName;
         this.patientName = patientName;
@@ -49,11 +49,11 @@ public class Appointment {
         this.patientName = patientName;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
@@ -71,6 +71,14 @@ public class Appointment {
 
     public void setDetails(String details) {
         this.details = details;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Override

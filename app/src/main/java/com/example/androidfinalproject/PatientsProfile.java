@@ -45,9 +45,9 @@ public class PatientsProfile extends AppCompatActivity {
             return;
         }
 
-        
+
         appointmentList = new ArrayList<>();
-        appointmentAdapter = new AppointmentAdapter(this, R.layout.appointment_item, appointmentList);
+        appointmentAdapter = new AppointmentAdapter(this, R.layout.appointment_patient_list, appointmentList);
         appointmentsListView.setAdapter(appointmentAdapter);
 
         loadAppointmentDetails();
@@ -56,6 +56,9 @@ public class PatientsProfile extends AppCompatActivity {
     }
 
     private void loadAppointmentDetails() {
+        patientId = "x3OgdFKSFfUFq2pCqlhGU3vt7ZR2";
+        Log.d("patint","patient" + patientId);
+
         FirebaseDatabase.getInstance().getReference().child("appointments")
                 .orderByChild("patientId").equalTo(patientId)
                 .addValueEventListener(new ValueEventListener() {
@@ -65,6 +68,7 @@ public class PatientsProfile extends AppCompatActivity {
                         if (dataSnapshot.exists()) {
                             for (DataSnapshot appointmentSnapshot : dataSnapshot.getChildren()) {
                                 Appointment appointment = appointmentSnapshot.getValue(Appointment.class);
+                                appointment.setDoctorName(appointmentSnapshot.child("cardiologist").getValue(String.class));
                                 appointmentList.add(appointment);
                             }
                             appointmentAdapter.notifyDataSetChanged();
