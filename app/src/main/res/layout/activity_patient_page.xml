@@ -8,6 +8,7 @@
     android:padding="16dp"
     tools:context=".PatientPage">
 
+
     <TextView
         android:id="@+id/welcomeTextView"
         android:layout_width="wrap_content"
@@ -28,13 +29,13 @@
         android:textSize="16dp"
         android:textColor="@color/grey"
         android:layout_gravity="center_horizontal"
-        android:layout_margin="12dp"/>
+        android:layout_margin="10dp"/>
 
     <ImageView
         android:id="@+id/profileImageView"
         android:layout_width="350dp"
-        android:layout_height="150dp"
-        android:layout_gravity="center_horizontal"
+        android:layout_height="130dp"
+        android:layout_gravity="left"
         android:paddingBottom="12dp"
         android:src="@drawable/patientpage" />
 
@@ -296,13 +297,23 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/logoutBtn"
+        android:id="@+id/viewprofile"
         android:layout_width="300dp"
-        android:layout_height="55dp"
-        android:text="Logout"
+        android:layout_height="45dp"
+        android:text="View Profile"
         android:textColor="@android:color/white"
         android:layout_gravity="center_horizontal"
-        android:layout_margin="15dp"
+
+        />
+    <Button
+        android:id="@+id/logoutBtn"
+        android:layout_width="300dp"
+        android:layout_height="45dp"
+        android:text="Logout"
+        android:layout_margin="5dp"
+        android:textColor="@android:color/white"
+        android:layout_gravity="center_horizontal"
+
         />
 
 </LinearLayout>
