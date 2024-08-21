@@ -1,5 +1,7 @@
 package com.example.androidfinalproject;
 
+import com.example.androidfinalproject.utils.TimeUtils;
+
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -13,6 +15,11 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -158,10 +165,25 @@ public class DoctorsPage extends AppCompatActivity {
     }
 
     private void clearAvailability() {
+
         dateInput.setText("");
         startTimeInput.setText("");
         endTimeInput.setText("");
+
+
+        currentAvailability.setText("");
+
+        String doctorId = mAuth.getCurrentUser().getUid();
+        availabilityRef.removeValue().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(this, "Availability cleared", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Failed to clear availability", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Failed to clear availability", task.getException());
+            }
+        });
     }
+
 
     private void loadAvailability() {
         String doctorId = mAuth.getCurrentUser().getUid();
@@ -172,11 +194,43 @@ public class DoctorsPage extends AppCompatActivity {
                     StringBuilder builder = new StringBuilder();
                     for (DataSnapshot dateSnapshot : dataSnapshot.getChildren()) {
                         String date = dateSnapshot.getKey();
-                        String startTime = dateSnapshot.child("startTime").getValue(String.class);
-                        String endTime = dateSnapshot.child("endTime").getValue(String.class);
-                        builder.append(date).append(": ").append(startTime).append(" - ").append(endTime).append("\n");
+                        String startTimeString = dateSnapshot.child("startTime").getValue(String.class);
+                        String endTimeString = dateSnapshot.child("endTime").getValue(String.class);
+
+                        // Debugging logs
+                        Log.d(TAG, "Date: " + date);
+                        Log.d(TAG, "Start Time: " + startTimeString);
+                        Log.d(TAG, "End Time: " + endTimeString);
+
+                        if (startTimeString != null && endTimeString != null) {
+                            try {
+                                Date startTime = TimeUtils.parseTime(startTimeString);
+                                Date endTime = TimeUtils.parseTime(endTimeString);
+
+                                String formattedStartTime = TimeUtils.formatTime(startTime);
+                                String formattedEndTime = TimeUtils.formatTime(endTime);
+
+                                builder.append(date)
+                                        .append(": ")
+                                        .append(formattedStartTime)
+                                        .append(" - ")
+                                        .append(formattedEndTime)
+                                        .append("\n");
+                            } catch (ParseException e) {
+                                Log.e(TAG, "Error parsing time", e);
+                                builder.append(date)
+                                        .append(": Error parsing time\n");
+                            }
+                        } else {
+                            builder.append(date)
+                                    .append(": Start time or End time missing\n");
+                        }
                     }
-                    currentAvailability.setText(builder.toString());
+                    if (builder.length() > 0) {
+                        currentAvailability.setText(builder.toString());
+                    } else {
+                        currentAvailability.setText("No availability data found.");
+                    }
                 } catch (Exception e) {
                     Log.e(TAG, "Error loading availability", e);
                     Toast.makeText(DoctorsPage.this, "Error loading availability", Toast.LENGTH_SHORT).show();
@@ -190,6 +244,10 @@ public class DoctorsPage extends AppCompatActivity {
             }
         });
     }
+
+
+
+
 
     private void loadAppointments() {
         appointmentRef.addValueEventListener(new ValueEventListener() {
