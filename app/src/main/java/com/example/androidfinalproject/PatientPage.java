@@ -108,7 +108,8 @@ public class PatientPage extends AppCompatActivity {
         viewprofile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("PatientPage", "View Profile button clicked");
+                Log.d("PatientPage", "PatientId: " + patientId);
+                Log.d("PatientPage", "AppointmentId: " + appointmentId);
 
                 Intent intent = new Intent(PatientPage.this, PatientsProfile.class);
                 intent.putExtra("patientId", patientId);

@@ -94,13 +94,11 @@ public class PatientDetailsPage extends AppCompatActivity {
     }
 
 
-
     private void confirmAppointment() {
         appointmentRef.child(appointmentId).child("status").setValue("Confirmed").addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 updatePatientProfile("Appointment Confirmed", "Your appointment has been confirmed.");
                 Toast.makeText(PatientDetailsPage.this, "Appointment confirmed", Toast.LENGTH_SHORT).show();
-                // Do not navigate away, just update the status
             } else {
                 Toast.makeText(PatientDetailsPage.this, "Failed to confirm appointment", Toast.LENGTH_SHORT).show();
             }
@@ -112,7 +110,6 @@ public class PatientDetailsPage extends AppCompatActivity {
             if (task.isSuccessful()) {
                 updatePatientProfile("Appointment Cancelled", "Your appointment has been cancelled.");
                 Toast.makeText(PatientDetailsPage.this, "Appointment cancelled", Toast.LENGTH_SHORT).show();
-                // Do not navigate away, just update the status
             } else {
                 Toast.makeText(PatientDetailsPage.this, "Failed to cancel appointment", Toast.LENGTH_SHORT).show();
             }
@@ -120,7 +117,16 @@ public class PatientDetailsPage extends AppCompatActivity {
     }
 
     private void updatePatientProfile(String status, String message) {
+        // Reference to the specific appointment
+        DatabaseReference appointmentRef = FirebaseDatabase.getInstance().getReference().child("appointments").child(appointmentId);
+
+        // Update the status and message
+        appointmentRef.child("status").setValue(status);
+        appointmentRef.child("confirmationMessage").setValue(message);
+
+        // Optionally, you can also update a separate field in the patient profile if needed
         DatabaseReference patientProfileRef = FirebaseDatabase.getInstance().getReference().child("patients").child(patientId).child("appointments").child(appointmentId);
-        patientProfileRef.child("statusMessage").setValue(message);
+        patientProfileRef.child("status").setValue(status);
+        patientProfileRef.child("confirmationMessage").setValue(message);
     }
 }
