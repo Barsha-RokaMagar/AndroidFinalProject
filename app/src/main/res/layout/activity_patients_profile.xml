@@ -1,4 +1,4 @@
-<!-- activity_patient_profile.xml -->
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -16,27 +16,23 @@
         android:layout_gravity="center"
         android:paddingBottom="16dp" />
 
-
     <TextView
         android:id="@+id/confirmationTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Appointment Confirmation"
+        android:text="Appointment Details"
         android:layout_gravity="center"
         android:textColor="@android:color/holo_red_dark"
         android:textSize="22sp"
         android:textStyle="bold"
         android:paddingBottom="16dp" />
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="15dp"
-        android:background="@drawable/editext_border"
-        >
-
+        android:background="@drawable/editext_border">
 
         <TextView
             android:id="@+id/patientName"
@@ -44,37 +40,41 @@
             android:layout_height="wrap_content"
             android:text="Name: "
             android:textSize="18sp"
-            android:paddingBottom="8dp"/>
-
-
-        <TextView
-            android:id="@+id/patientEmail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Email: "
-            android:textSize="18sp"
-            android:paddingBottom="8dp"/>
-
+            android:paddingBottom="8dp" />
 
         <TextView
             android:id="@+id/selectedDoctor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Selected Doctor: "
+            android:text="Doctor: "
             android:textSize="18sp"
-            android:paddingBottom="8dp"/>
-
+            android:paddingBottom="8dp" />
 
         <TextView
-            android:id="@+id/statusMessage"
+            android:id="@+id/appointmentDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date: "
+            android:textSize="18sp"
+            android:paddingBottom="8dp" />
+
+        <TextView
+            android:id="@+id/appointmentTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time: "
+            android:textSize="18sp"
+            android:paddingBottom="8dp" />
+
+        <TextView
+            android:id="@+id/status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Status: "
             android:textSize="18sp"
             android:textColor="@android:color/holo_red_dark"
-            android:paddingTop="24dp"/>
+            android:paddingTop="24dp" />
     </LinearLayout>
-
 
     <Button
         android:id="@+id/gobacktopatient"

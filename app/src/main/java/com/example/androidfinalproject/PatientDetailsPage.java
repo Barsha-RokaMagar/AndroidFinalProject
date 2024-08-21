@@ -117,14 +117,14 @@ public class PatientDetailsPage extends AppCompatActivity {
     }
 
     private void updatePatientProfile(String status, String message) {
-        // Reference to the specific appointment
+
         DatabaseReference appointmentRef = FirebaseDatabase.getInstance().getReference().child("appointments").child(appointmentId);
 
-        // Update the status and message
+
         appointmentRef.child("status").setValue(status);
         appointmentRef.child("confirmationMessage").setValue(message);
 
-        // Optionally, you can also update a separate field in the patient profile if needed
+
         DatabaseReference patientProfileRef = FirebaseDatabase.getInstance().getReference().child("patients").child(patientId).child("appointments").child(appointmentId);
         patientProfileRef.child("status").setValue(status);
         patientProfileRef.child("confirmationMessage").setValue(message);

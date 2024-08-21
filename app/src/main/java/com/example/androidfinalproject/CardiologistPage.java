@@ -126,10 +126,10 @@ public class CardiologistPage extends AppCompatActivity {
             if (task.isSuccessful()) {
                 Toast.makeText(CardiologistPage.this, "Appointment booked", Toast.LENGTH_SHORT).show();
 
-                // Log the appointment details for debugging
+
                 Log.d("CardiologistPage", "Appointment booked - Date: " + date + ", Time: " + time + ", Cardiologist: " + selectedCardiologist);
 
-                // Navigate to AppointmentDetails activity with appointment details
+
                 Intent intent = new Intent(CardiologistPage.this, AppointmentDetailsofPatients.class);
                 intent.putExtra("date", date);
                 intent.putExtra("time", time);

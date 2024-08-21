@@ -1,6 +1,5 @@
 package com.example.androidfinalproject;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -18,100 +17,63 @@ import com.google.firebase.database.DataSnapshot;
 
 public class PatientsProfile extends AppCompatActivity {
 
-    private TextView patientName, patientEmail, selectedDoctor, statusMessage;
-    private DatabaseReference patientsRef, appointmentsRef;
-    private String patientId, appointmentId;
+    private TextView patientName, selectedDoctor, appointmentDate, appointmentTime, status;
     private Button goBackButton;
+    private DatabaseReference appointmentRef;
+    private String patientId, appointmentId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patients_profile);
 
-        // Initialize UI components
+        // Initialize views
         patientName = findViewById(R.id.patientName);
-        patientEmail = findViewById(R.id.patientEmail);
         selectedDoctor = findViewById(R.id.selectedDoctor);
-        statusMessage = findViewById(R.id.statusMessage);
+        appointmentDate = findViewById(R.id.appointmentDate);
+        appointmentTime = findViewById(R.id.appointmentTime);
+        status = findViewById(R.id.status);
         goBackButton = findViewById(R.id.gobacktopatient);
 
-        // Initialize Firebase database references
-        patientsRef = FirebaseDatabase.getInstance().getReference().child("patients");
-        appointmentsRef = FirebaseDatabase.getInstance().getReference().child("appointments");
+        // Get patient and appointment IDs from the intent
+        patientId = getIntent().getStringExtra("patientId");
+        appointmentId = getIntent().getStringExtra("appointmentId");
 
-        // Retrieve patientId and appointmentId from Intent
-        Intent intent = getIntent();
-        patientId = intent.getStringExtra("patientId");
-        appointmentId = intent.getStringExtra("appointmentId");
-
-        Log.d("PatientsProfile", "Patient ID: " + patientId);
-        Log.d("PatientsProfile", "Appointment ID: " + appointmentId);
-
-        // Ensure IDs are valid before loading data
-        if (patientId != null && appointmentId != null) {
-            loadPatientProfile();
-            loadAppointmentDetails();
-        } else {
-            Toast.makeText(PatientsProfile.this, "No patient or appointment data available", Toast.LENGTH_SHORT).show();
+        if (patientId == null || appointmentId == null) {
+            Toast.makeText(this, "No appointment data available", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
         }
 
-        // Set up button click listener
+
+        loadAppointmentDetails();
+
         goBackButton.setOnClickListener(v -> finish());
     }
 
-    private void loadPatientProfile() {
-        Log.d("PatientsProfile", "Loading patient profile for ID: " + patientId);
-
-        patientsRef.child(patientId).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d("PatientsProfile", "Patient profile data retrieved");
-
-                if (dataSnapshot.exists()) {
-                    String name = dataSnapshot.child("name").getValue(String.class);
-                    String email = dataSnapshot.child("email").getValue(String.class);
-
-                    if (name != null && email != null) {
-                        patientName.setText("Name: " + name);
-                        patientEmail.setText("Email: " + email);
-                    } else {
-                        Toast.makeText(PatientsProfile.this, "Patient details are missing", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(PatientsProfile.this, "No data available for this patient ID", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("PatientsProfile", "Failed to load patient details", databaseError.toException());
-                Toast.makeText(PatientsProfile.this, "Failed to load patient details", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
     private void loadAppointmentDetails() {
-        Log.d("PatientsProfile", "Loading appointment details for ID: " + appointmentId);
-
-        appointmentsRef.child(appointmentId).addValueEventListener(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child("appointments").child(appointmentId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d("PatientsProfile", "Appointment details data retrieved");
-
                 if (dataSnapshot.exists()) {
-                    String doctorName = dataSnapshot.child("doctorName").getValue(String.class); // Adjust field name if necessary
-                    String status = dataSnapshot.child("status").getValue(String.class);
-                    String confirmationMessage = dataSnapshot.child("confirmationMessage").getValue(String.class);
+                    // Access the appointments node
+                //    DataSnapshot appointmentsSnapshot = dataSnapshot.child("appointments");
 
-                    if (doctorName != null && status != null && confirmationMessage != null) {
-                        selectedDoctor.setText("Selected Doctor: " + doctorName);
-                        statusMessage.setText("Status: " + status);
-                        statusMessage.append("\nMessage: " + confirmationMessage);
-                    } else {
-                        Toast.makeText(PatientsProfile.this, "Appointment details are incomplete", Toast.LENGTH_SHORT).show();
+                    // Iterate over each appointment
+                    for (DataSnapshot appointmentSnapshot : dataSnapshot.getChildren()) {
+                        String doctorName = appointmentSnapshot.child("cardiologist").getValue(String.class);
+                        String date = appointmentSnapshot.child("date").getValue(String.class);
+                        String time = appointmentSnapshot.child("time").getValue(String.class);
+                        String appointmentStatus = appointmentSnapshot.child("status").getValue(String.class);
+
+                        patientName.setText("Name: " + getIntent().getStringExtra("patientName")); // Assuming patientName is passed from previous activity
+                        selectedDoctor.setText("Doctor: " + doctorName);
+                        appointmentDate.setText("Date: " + date);
+                        appointmentTime.setText("Time: " + time);
+                        status.setText("Status: " + (appointmentStatus != null ? appointmentStatus : "Not Available"));
                     }
                 } else {
-                    Toast.makeText(PatientsProfile.this, "No data available for this appointment ID", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PatientsProfile.this, "No appointment details found", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -122,4 +84,5 @@ public class PatientsProfile extends AppCompatActivity {
             }
         });
     }
+
 }
