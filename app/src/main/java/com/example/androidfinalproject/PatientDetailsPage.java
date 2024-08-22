@@ -34,11 +34,12 @@ public class PatientDetailsPage extends AppCompatActivity {
     private static final String CHANNEL_ID = "default_channel_id";
     private static final int REQUEST_CODE_NOTIFICATION_PERMISSION = 1001;
 
-    private TextView patientName, patientEmail;
+    private TextView patientName, patientEmail, appointmentDate, appointmentTime;
     private Button confirmButton, cancelButton, gobackButton;
 
     private DatabaseReference usersRef, appointmentRef;
     private String patientId, appointmentId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,9 @@ public class PatientDetailsPage extends AppCompatActivity {
         confirmButton = findViewById(R.id.confirmButton);
         cancelButton = findViewById(R.id.cancelButton);
         gobackButton = findViewById(R.id.gobackButton);
+        appointmentDate = findViewById(R.id.appointmentDate);
+        appointmentTime = findViewById(R.id.appointmentTime);
+
 
         patientId = getIntent().getStringExtra("patientId");
         appointmentId = getIntent().getStringExtra("appointmentId");
@@ -64,6 +68,7 @@ public class PatientDetailsPage extends AppCompatActivity {
         }
 
         loadPatientDetails();
+        loadAppointmentDetails();
 
         confirmButton.setOnClickListener(v -> confirmAppointment());
         cancelButton.setOnClickListener(v -> cancelAppointment());
@@ -89,6 +94,29 @@ public class PatientDetailsPage extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.e(TAG, "Failed to load patient details", databaseError.toException());
                 Toast.makeText(PatientDetailsPage.this, "Failed to load patient details", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void loadAppointmentDetails() {
+        appointmentRef.child(appointmentId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String date = dataSnapshot.child("date").getValue(String.class);
+                String time = dataSnapshot.child("time").getValue(String.class);
+
+                if (date != null && time != null) {
+                    appointmentDate.setText("Appointment Date: " + date);
+                    appointmentTime.setText("Appointment Time: " + time);
+                } else {
+                    Toast.makeText(PatientDetailsPage.this, "Failed to load appointment details", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e(TAG, "Failed to load appointment details", databaseError.toException());
+                Toast.makeText(PatientDetailsPage.this, "Failed to load appointment details", Toast.LENGTH_SHORT).show();
             }
         });
     }

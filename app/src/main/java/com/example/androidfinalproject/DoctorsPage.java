@@ -45,10 +45,10 @@ public class DoctorsPage extends AppCompatActivity {
     private ImageButton datePickerButton, startTimePickerButton, endTimePickerButton;
     private Button saveButton, clearButton, logoutButton;
     private TableLayout appointmentList;
-
+    FirebaseUser currentUser;
     private FirebaseAuth mAuth;
     private DatabaseReference availabilityRef, appointmentRef;
-
+    String doctorName;
     private int selectedYear, selectedMonth, selectedDay, selectedStartHour, selectedStartMinute, selectedEndHour, selectedEndMinute;
 
     @Override
@@ -58,9 +58,10 @@ public class DoctorsPage extends AppCompatActivity {
 
 
         mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+         currentUser = mAuth.getCurrentUser();
 
         if (currentUser != null) {
+            loadPatientDetails();
             Log.d(TAG, "User is logged in: " + currentUser.getUid());
         } else {
             Log.d(TAG, "User not logged in");
@@ -104,7 +105,7 @@ public class DoctorsPage extends AppCompatActivity {
         appointmentRef = FirebaseDatabase.getInstance().getReference().child("appointments");
 
         loadAvailability();
-        loadAppointments();
+
     }
 
     private void showDatePicker() {
@@ -284,48 +285,72 @@ public class DoctorsPage extends AppCompatActivity {
             return timeString;
         }
     }
+    private void loadPatientDetails() {
+        FirebaseDatabase.getInstance().getReference().child("users").child( mAuth.getCurrentUser().getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            doctorName = dataSnapshot.child("name").getValue(String.class).toString();
+                            loadAppointments();
+                        } else {
+                            Toast.makeText(DoctorsPage.this, "doctor not found", Toast.LENGTH_SHORT).show();
+                        }
+                    }
 
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.e("PatientsProfile", "Failed to load doctor details", databaseError.toException());
+                        Toast.makeText(DoctorsPage.this, "Failed to load doctor details", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
 
 
 
     private void loadAppointments() {
-        appointmentRef.addValueEventListener(new ValueEventListener() {
+        Log.d("doctor","doctorname" + doctorName);
+        appointmentRef
+                .orderByChild("cardiologist").equalTo(doctorName).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try {
                     appointmentList.removeAllViews();
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        String date = snapshot.child("date").getValue(String.class);
-                        String time = snapshot.child("time").getValue(String.class);
-                        String endTime = snapshot.child("endTime").getValue(String.class);
-                        String patientId = snapshot.child("patientId").getValue(String.class);
-                        String appointmentId = snapshot.getKey();
+                         String status = snapshot.child("status").getValue(String.class);
+                        if (status == null || status.isEmpty()) {
+                             String date = snapshot.child("date").getValue(String.class);
+                             String time = snapshot.child("time").getValue(String.class);
+                             String endTime = snapshot.child("endTime").getValue(String.class);
+                             String patientId = snapshot.child("patientId").getValue(String.class);
+                             String appointmentId = snapshot.getKey();
 
-                        TableRow row = new TableRow(DoctorsPage.this);
+                             TableRow row = new TableRow(DoctorsPage.this);
 
-                        TextView dateView = new TextView(DoctorsPage.this);
-                        dateView.setText("Date: " + date);
-                        dateView.setPadding(8, 8, 8, 8);
-                        row.addView(dateView);
+                             TextView dateView = new TextView(DoctorsPage.this);
+                             dateView.setText("Date: " + date);
+                             dateView.setPadding(8, 8, 8, 8);
+                             row.addView(dateView);
 
-                        TextView timeView = new TextView(DoctorsPage.this);
-                        timeView.setText("Time: " + time );
-                        timeView.setPadding(8, 8, 8, 8);
-                        row.addView(timeView);
+                             TextView timeView = new TextView(DoctorsPage.this);
+                             timeView.setText("Time: " + time);
+                             timeView.setPadding(8, 8, 8, 8);
+                             row.addView(timeView);
 
 
-                        TextView actionsView = new TextView(DoctorsPage.this);
-                        actionsView.setText("View Patient");
-                        actionsView.setPadding(8, 8, 8, 8);
-                        actionsView.setOnClickListener(v -> {
-                            Intent intent = new Intent(DoctorsPage.this, PatientDetailsPage.class);
-                            intent.putExtra("patientId", patientId);
-                            intent.putExtra("appointmentId", appointmentId);
-                            startActivity(intent);
-                        });
-                        row.addView(actionsView);
+                             TextView actionsView = new TextView(DoctorsPage.this);
+                             actionsView.setText("View Patient");
+                             actionsView.setPadding(8, 8, 8, 8);
+                             actionsView.setOnClickListener(v -> {
+                                 Intent intent = new Intent(DoctorsPage.this, PatientDetailsPage.class);
+                                 intent.putExtra("patientId", patientId);
+                                 intent.putExtra("appointmentId", appointmentId);
+                                 startActivity(intent);
+                             });
+                             row.addView(actionsView);
 
-                        appointmentList.addView(row);
+                             appointmentList.addView(row);
+                         }
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "Error loading appointments", e);
