@@ -29,6 +29,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.DataSnapshot;
 
@@ -58,7 +59,7 @@ public class DoctorsPage extends AppCompatActivity {
 
 
         mAuth = FirebaseAuth.getInstance();
-         currentUser = mAuth.getCurrentUser();
+        currentUser = mAuth.getCurrentUser();
 
         if (currentUser != null) {
             loadPatientDetails();
@@ -198,13 +199,13 @@ public class DoctorsPage extends AppCompatActivity {
                     StringBuilder builder = new StringBuilder();
 
                     for (DataSnapshot daySnapshot : dataSnapshot.getChildren()) {
-                         day = daySnapshot.getKey();
+                        day = daySnapshot.getKey();
 
                         for (DataSnapshot monthSnapshot : daySnapshot.getChildren()) {
-                             month = monthSnapshot.getKey();
+                            month = monthSnapshot.getKey();
 
                             for (DataSnapshot yearSnapshot : monthSnapshot.getChildren()) {
-                                 year = yearSnapshot.getKey();
+                                year = yearSnapshot.getKey();
 
                                 String startTimeString = yearSnapshot.child("startTime").getValue(String.class);
                                 String endTimeString = yearSnapshot.child("endTime").getValue(String.class);
@@ -309,48 +310,67 @@ public class DoctorsPage extends AppCompatActivity {
 
 
     private void loadAppointments() {
-        Log.d("doctor","doctorname" + doctorName);
-        appointmentRef
-                .orderByChild("cardiologist").equalTo(doctorName).addValueEventListener(new ValueEventListener() {
+        Log.d("doctor", "doctorname: " + doctorName);
+
+        // Query for all appointments
+        Query queryAll = appointmentRef;
+
+        // Create a listener for the query
+        ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try {
                     appointmentList.removeAllViews();
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                         String status = snapshot.child("status").getValue(String.class);
-                        if (status == null || status.isEmpty()) {
-                             String date = snapshot.child("date").getValue(String.class);
-                             String time = snapshot.child("time").getValue(String.class);
-                             String endTime = snapshot.child("endTime").getValue(String.class);
-                             String patientId = snapshot.child("patientId").getValue(String.class);
-                             String appointmentId = snapshot.getKey();
+                        // Check each field for the doctorName
+                        boolean isMatch = false;
+                        for (String specialty : new String[] {"cardiologist", "dentist", "dermatologist", "gynecologist", "neurologist", "ophthalmologist", "pediatrician", "psychologist"}) {
+                            String value = snapshot.child(specialty).getValue(String.class);
+                            if (doctorName.equals(value)) {
+                                isMatch = true;
+                                break;
+                            }
+                        }
 
-                             TableRow row = new TableRow(DoctorsPage.this);
+                        // If there's a match, add the appointment to the view
+                        if (isMatch) {
+                            // Fetch appointment details
+                            String date = snapshot.child("date").getValue(String.class);
+                            String time = snapshot.child("time").getValue(String.class);
+                            String endTime = snapshot.child("endTime").getValue(String.class);
+                            String patientId = snapshot.child("patientId").getValue(String.class);
+                            String appointmentId = snapshot.getKey();
 
-                             TextView dateView = new TextView(DoctorsPage.this);
-                             dateView.setText("Date: " + date);
-                             dateView.setPadding(8, 8, 8, 8);
-                             row.addView(dateView);
+                            // Create a new TableRow
+                            TableRow row = new TableRow(DoctorsPage.this);
 
-                             TextView timeView = new TextView(DoctorsPage.this);
-                             timeView.setText("Time: " + time);
-                             timeView.setPadding(8, 8, 8, 8);
-                             row.addView(timeView);
+                            // Add Date TextView
+                            TextView dateView = new TextView(DoctorsPage.this);
+                            dateView.setText("Date: " + date);
+                            dateView.setPadding(8, 8, 8, 8);
+                            row.addView(dateView);
 
+                            // Add Time TextView
+                            TextView timeView = new TextView(DoctorsPage.this);
+                            timeView.setText("Time: " + time);
+                            timeView.setPadding(8, 8, 8, 8);
+                            row.addView(timeView);
 
-                             TextView actionsView = new TextView(DoctorsPage.this);
-                             actionsView.setText("View Patient");
-                             actionsView.setPadding(8, 8, 8, 8);
-                             actionsView.setOnClickListener(v -> {
-                                 Intent intent = new Intent(DoctorsPage.this, PatientDetailsPage.class);
-                                 intent.putExtra("patientId", patientId);
-                                 intent.putExtra("appointmentId", appointmentId);
-                                 startActivity(intent);
-                             });
-                             row.addView(actionsView);
+                            // Add Actions TextView with OnClickListener
+                            TextView actionsView = new TextView(DoctorsPage.this);
+                            actionsView.setText("View Patient");
+                            actionsView.setPadding(8, 8, 8, 8);
+                            actionsView.setOnClickListener(v -> {
+                                Intent intent = new Intent(DoctorsPage.this, PatientDetailsPage.class);
+                                intent.putExtra("patientId", patientId);
+                                intent.putExtra("appointmentId", appointmentId);
+                                startActivity(intent);
+                            });
+                            row.addView(actionsView);
 
-                             appointmentList.addView(row);
-                         }
+                            // Add the row to the TableLayout
+                            appointmentList.addView(row);
+                        }
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "Error loading appointments", e);
@@ -363,9 +383,11 @@ public class DoctorsPage extends AppCompatActivity {
                 Log.e(TAG, "Failed to load appointments", databaseError.toException());
                 Toast.makeText(DoctorsPage.this, "Failed to load appointments", Toast.LENGTH_SHORT).show();
             }
-        });
-    }
+        };
 
+        // Attach listener to the query
+        queryAll.addValueEventListener(listener);
+    }
 
 
 
