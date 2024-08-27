@@ -312,17 +312,17 @@ public class DoctorsPage extends AppCompatActivity {
     private void loadAppointments() {
         Log.d("doctor", "doctorname: " + doctorName);
 
-        // Query for all appointments
+
         Query queryAll = appointmentRef;
 
-        // Create a listener for the query
+
         ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try {
                     appointmentList.removeAllViews();
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        // Check each field for the doctorName
+
                         boolean isMatch = false;
                         for (String specialty : new String[] {"cardiologist", "dentist", "dermatologist", "gynecologist", "neurologist", "ophthalmologist", "pediatrician", "psychologist"}) {
                             String value = snapshot.child(specialty).getValue(String.class);
@@ -332,31 +332,31 @@ public class DoctorsPage extends AppCompatActivity {
                             }
                         }
 
-                        // If there's a match, add the appointment to the view
+
                         if (isMatch) {
-                            // Fetch appointment details
+
                             String date = snapshot.child("date").getValue(String.class);
                             String time = snapshot.child("time").getValue(String.class);
                             String endTime = snapshot.child("endTime").getValue(String.class);
                             String patientId = snapshot.child("patientId").getValue(String.class);
                             String appointmentId = snapshot.getKey();
 
-                            // Create a new TableRow
+
                             TableRow row = new TableRow(DoctorsPage.this);
 
-                            // Add Date TextView
+
                             TextView dateView = new TextView(DoctorsPage.this);
                             dateView.setText("Date: " + date);
                             dateView.setPadding(8, 8, 8, 8);
                             row.addView(dateView);
 
-                            // Add Time TextView
+
                             TextView timeView = new TextView(DoctorsPage.this);
                             timeView.setText("Time: " + time);
                             timeView.setPadding(8, 8, 8, 8);
                             row.addView(timeView);
 
-                            // Add Actions TextView with OnClickListener
+
                             TextView actionsView = new TextView(DoctorsPage.this);
                             actionsView.setText("View Patient");
                             actionsView.setPadding(8, 8, 8, 8);
@@ -368,7 +368,7 @@ public class DoctorsPage extends AppCompatActivity {
                             });
                             row.addView(actionsView);
 
-                            // Add the row to the TableLayout
+
                             appointmentList.addView(row);
                         }
                     }
@@ -385,7 +385,7 @@ public class DoctorsPage extends AppCompatActivity {
             }
         };
 
-        // Attach listener to the query
+
         queryAll.addValueEventListener(listener);
     }
 
