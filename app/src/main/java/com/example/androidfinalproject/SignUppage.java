@@ -100,7 +100,6 @@ public class SignUppage extends AppCompatActivity {
                 RadioButton selectedUserType = findViewById(selectedUserTypeId);
                 String userType = selectedUserType == null ? "" : selectedUserType.getText().toString();
 
-                // Check if Doctor is selected and validate specialty field
                 if (userType.equals("Doctor") && userSpecialty.isEmpty()) {
                     Toast.makeText(SignUppage.this, "Please enter your specialty", Toast.LENGTH_SHORT).show();
                     return;
@@ -118,8 +117,14 @@ public class SignUppage extends AppCompatActivity {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
-                                                Toast.makeText(SignUppage.this, "User registered successfully", Toast.LENGTH_SHORT).show();
-                                                Intent intent = new Intent(SignUppage.this, Loginpage.class);
+                                                // Pass data to MainActivity
+                                                Intent intent = new Intent(SignUppage.this, MainActivity.class);
+                                                intent.putExtra("name", nameuser);
+                                                intent.putExtra("username", userusername);
+                                                intent.putExtra("email", emailuser);
+                                                intent.putExtra("password", passuser);
+                                                intent.putExtra("gender", gender);
+                                                intent.putExtra("userType", userType);
                                                 startActivity(intent);
                                                 finish();
                                             } else {
@@ -134,5 +139,6 @@ public class SignUppage extends AppCompatActivity {
                         });
             }
         });
+
     }
 }

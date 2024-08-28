@@ -51,6 +51,10 @@
             android:name=".PatientPage"
             android:exported="false" />
         <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".DoctorsPage"
             android:exported="false" />
         <activity
